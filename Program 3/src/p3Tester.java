@@ -1,5 +1,5 @@
 public class p3Tester {
-    public void main (String args[]) {
+    public static void main (String args[]) {
         int array[] = new int[0], index;
 
     }
@@ -15,6 +15,14 @@ public class p3Tester {
             int child = index;
             //check heap violation
             heapViolation(parent, child);
+
+            printArray(array);
+        }
+    }
+
+    private static void printArray(int[] array) {
+        for(int i=0; i<array.length; i++) {
+            System.out.println(array[i]);
         }
     }
 
