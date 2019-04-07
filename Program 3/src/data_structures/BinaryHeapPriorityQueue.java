@@ -1,3 +1,4 @@
+//WORK IN PROGRESS
 package data_structures;
 
 import java.util.Collection;
@@ -36,6 +37,16 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
 //        this.comparator = comparator;
 //    }
 
+    private E[] theHeap;
+    private int capacity;
+    private int pos;
+
+    public BinaryHeapPriorityQueue() {
+        pos = 1;
+        capacity = 10;
+        theHeap = (E[]) new Object[capacity];
+    }
+
 
 
     public boolean insert(E object) {
@@ -43,6 +54,21 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
 //        arrayList[lastIndex+1] = object;
 //        //if-heapViolation then upHeap
 //        upHeap(object);
+        if (pos == capacity) {
+            //increase capacity
+        } else {
+            theHeap[pos++] = object;
+
+            int child = pos-1;
+            int parent = child/2;
+
+            //This is in accordance to the Heap Violation
+            //compare parent position with child and parent > 0
+            // if yes then swap the parent with the child
+
+            //child = parent
+            //parent = child/2
+        }
 
         return false;
     }
