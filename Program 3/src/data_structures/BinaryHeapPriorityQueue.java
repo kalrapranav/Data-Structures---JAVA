@@ -7,70 +7,64 @@ import java.util.Iterator;
 
 public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements PriorityQueue<E> {
 
-//    /*
-//    * Variables
-//    * - arrayList stores the all the entries
-//    * - capacity is the max capacity of the list
-//    * - last index the index of the last element of the heap
-//    * */
-//    private E[] arrayList;
-//    private int capacity;
-//    private int lastIndex;
-//    private Comparator<E> comparator;
-//
-//    /*
-//    * Constructors
-//    * - One Parameter : comparator
-//    * - Two Parameter : comparator, capacity
-//    * */
-//
-//    BinaryHeapPriorityQueue(Comparator<E> comparator) {
-//        this.arrayList = (E[]) new Object[DEFAULT_MAX_CAPACITY];
-//        this.capacity = DEFAULT_MAX_CAPACITY;
-//        this.lastIndex = -1;
-//        this.comparator = comparator;
-//    }
-//    BinaryHeapPriorityQueue(int capacity, Comparator<E> comparator) {
-//        this.arrayList = (E[]) new Object[capacity];
-//        this.capacity = capacity;
-//        this.lastIndex = -1;
-//        this.comparator = comparator;
-//    }
-
-    private E[] theHeap;
+    /*
+    * Variables
+    * - arrayList stores the all the entries
+    * - capacity is the max capacity of the list
+    * - last index the index of the last element of the heap
+    * */
+    private E[] arrayList;
     private int capacity;
-    private int pos;
+    private int lastIndex;
+    private Comparator<E> comparator;
 
-    public BinaryHeapPriorityQueue() {
-        pos = 1;
-        capacity = 10;
-        theHeap = (E[]) new Object[capacity];
+    /*
+    * Constructors
+    * - One Parameter : comparator
+    * - Two Parameter : comparator, capacity
+    * */
+
+    /*Constructor with one parameter
+      The capacity of the array is DEFAULT: 1000
+    */
+    BinaryHeapPriorityQueue(Comparator<E> comparator) {
+        this.arrayList = (E[]) new Object[DEFAULT_MAX_CAPACITY];
+        this.capacity = DEFAULT_MAX_CAPACITY;
+        this.lastIndex = -1;
+        this.comparator = comparator;
+    }
+
+    /*Constructor with two parameter
+      The capacity of the array is set according to the user
+    */
+    BinaryHeapPriorityQueue(int capacity, Comparator<E> comparator) {
+        this.arrayList = (E[]) new Object[capacity];
+        this.capacity = capacity;
+        this.lastIndex = -1;
+        this.comparator = comparator;
     }
 
 
-
     public boolean insert(E object) {
-//        if (isFull()) {return false;}
-//        arrayList[lastIndex+1] = object;
-//        //if-heapViolation then upHeap
-//        upHeap(object);
-        if (pos == capacity) {
-            //increase capacity
-        } else {
-            theHeap[pos++] = object;
-
-            int child = pos-1;
-            int parent = child/2;
-
-            //This is in accordance to the Heap Violation
-            //compare parent position with child and parent > 0
-            // if yes then swap the parent with the child
-
-            //child = parent
-            //parent = child/2
+        if (isFull()) {
+            throw  new RuntimeException("Heap is Full");
         }
 
-        return false;
+        arrayList[lastIndex+1] = object;
+        bottomHeapUp(lastIndex);
+        return true;
+    }
+
+    private void bottomHeapUp(int index) {
+        int parentIndex = getParent(index);
+
+        if (index == 0 || !isValidIndex(parentIndex)) {
+
+        }
+    }
+
+    private boolean isValidIndex(int index) {
+        return index >= 0 && index <= lastIndex;
     }
 
     private int getLeftChild(int index) {
@@ -117,7 +111,7 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
     }
 
     public boolean isFull() {
-        return false;
+        return lastIndex + 1 == capacity;
     }
 
     public Iterator<E> iterator() {
