@@ -69,6 +69,22 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
     }
 
     public boolean delete(E obj) {
+        if(!contains(obj))
+            return false;
+        Wrapper<E> [] tempStorage = array;
+        int size = currentSize;
+        boolean removed = false;
+        currentSize = 0;
+        entryNumber = 0;
+        for (int i = 0; i < size; i++){
+            if ((tempStorage[i].data).compareTo(obj) < 0) {
+                insert(tempStorage[i].data);
+            } else {
+                modificationCounter++;
+                removed = true;
+            }
+        }
+
         return false;
     }
 
