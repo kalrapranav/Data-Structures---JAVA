@@ -47,8 +47,16 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
     }
 
     public boolean insert(E object) {
-        return false;
+        if (currentSize == totalArraySize)
+            return false;
+        array[currentSize] = new Wrapper<>(object);
+        int oldSize = currentSize;
+        currentSize++;
+        trickleUp(oldSize);
+        return true;
     }
+
+
 
     public E remove() {
         return null;
@@ -84,5 +92,16 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
 
     public Iterator<E> iterator() {
         return null;
+    }
+
+    private void trickleUp(int oldSize) {
+        int parent = (int) ((oldSize - 1)/2);
+        Wrapper<E> currentObject = array[oldSize];
+        while ((parent >= 0) && (currentObject.compareTo(array[parent]) < 0)) {
+            array[oldSize] = array[parent];
+            oldSize = parent;
+            parent = (oldSize - 1)>>1;
+        }
+        array[oldSize] = currentObject;
     }
 }
