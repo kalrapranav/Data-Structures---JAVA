@@ -117,5 +117,15 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
     }
 
     private int getNextChild(int current) {
+        int left = (current * 2) + 1;
+        int right = left + 1;
+        if (right < currentSize) {
+            if (array[left].compareTo(array[right]) < 0)
+                return left;
+            return right;
+        }
+        if (left < currentSize)
+            return left;
+        return -1;
     }
 }
