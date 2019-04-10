@@ -73,26 +73,39 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
     }
 
     public E peek() {
-        return null;
+        if (isEmpty())
+            return null;
+        return array[0].data;
     }
 
     public boolean contains(E obj) {
+        if(isEmpty())
+            return false;
+        for(Wrapper<E> anyObject : array) {
+            if (anyObject.data.compareTo(obj) == 0)
+                return true;
+        }
         return false;
     }
 
     public int size() {
-        return 0;
+        return currentSize;
     }
 
     public void clear() {
-
+        currentSize = 0;
+        entryNumber = 0;
     }
 
     public boolean isEmpty() {
+        if (currentSize == 0)
+            return true;
         return false;
     }
 
     public boolean isFull() {
+        if (currentSize == totalArraySize)
+            return true;
         return false;
     }
 
