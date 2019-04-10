@@ -104,4 +104,18 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
         }
         array[oldSize] = currentObject;
     }
+
+    public void trickleDown(int oldSize) {
+        int current = 0;
+        int child = getNextChild(current);
+        while (child != -1 && array[current].compareTo(array[child]) < 0 && array[child].compareTo(array[currentSize - 1]) < 0) {
+            array[current] = array[child];
+            current = child;
+            child = getNextChild(current);
+        }
+        array[current] = array[currentSize - 1];
+    }
+
+    private int getNextChild(int current) {
+    }
 }
