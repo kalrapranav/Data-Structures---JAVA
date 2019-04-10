@@ -11,19 +11,17 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
     int currentSize = 0;
     int totalArraySize;
     public long entryNumber;
-    int DEFAULT_CAPACITY = DEFAULT_MAX_CAPACITY;
+    //int DEFAULT_CAPACITY = DEFAULT_MAX_CAPACITY;
 
     public BinaryHeapPriorityQueue() {
-        currentSize = 0;
-        entryNumber = 0;
-        array = new Wrapper[DEFAULT_CAPACITY];
+        this(DEFAULT_MAX_CAPACITY);
     }
 
-    public BinaryHeapPriorityQueue(int totalArraySize) {
-        this.totalArraySize = totalArraySize;
+    public BinaryHeapPriorityQueue(int size) {
+        totalArraySize = size;
         currentSize = 0;
         entryNumber = 0;
-        array = new Wrapper[totalArraySize];
+        array = new Wrapper[size];
     }
 
     public class Wrapper<E> implements Comparable<Wrapper<E>> {
@@ -131,8 +129,9 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
 
     private class IteratorHelper implements Iterator<E> {
         private int current = 0;
-        private int oldModificationCounter = modificationCounter;
+        private long oldModificationCounter = modificationCounter;
 
+        @Override
         public boolean hasNext() {
             if (oldModificationCounter != modificationCounter) {
                 throw new ConcurrentModificationException("");
@@ -142,6 +141,7 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
             return false;
         }
 
+        @Override
         public E next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
@@ -149,20 +149,21 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
             return array[current++].data;
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
     }
 
-    private void trickleUp(int oldSize) {
-        int parent = (int) ((oldSize - 1)/2);
-        Wrapper<E> currentObject = array[oldSize];
+    private void trickleUp(int index) {
+        int parent = (int) ((index - 1)/2);
+        Wrapper<E> currentObject = array[index];
         while ((parent >= 0) && (currentObject.compareTo(array[parent]) < 0)) {
-            array[oldSize] = array[parent];
-            oldSize = parent;
-            parent = (oldSize - 1)>>1;
+            array[index] = array[parent];
+            index = parent;
+            parent = (index - 1)>>1;
         }
-        array[oldSize] = currentObject;
+        array[index] = currentObject;
     }
 
     public void trickleDown(int oldSize) {
