@@ -1,26 +1,33 @@
 //WORK IN PROGRESS
 package data_structures;
+import java.sql.Wrapper;
 import java.util.Comparator;
 import java.util.Iterator;
 
-public class BinaryHeapPriorityQueue<E extends Comparator<E>> implements PriorityQueue {
-    public boolean insert(Comparable object) {
+public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements PriorityQueue<E>, Iterable<E> {
+
+    private Wrapper<E>[] array;
+    int modificationCounter = 0;
+    int currentSize = 0;
+    public long entryNumber;
+
+    public boolean insert(E object) {
         return false;
     }
 
-    public Comparable remove() {
+    public E remove() {
         return null;
     }
 
-    public boolean delete(Comparable obj) {
+    public boolean delete(E obj) {
         return false;
     }
 
-    public Comparable peek() {
+    public E peek() {
         return null;
     }
 
-    public boolean contains(Comparable obj) {
+    public boolean contains(E obj) {
         return false;
     }
 
@@ -40,7 +47,7 @@ public class BinaryHeapPriorityQueue<E extends Comparator<E>> implements Priorit
         return false;
     }
 
-    public Iterator iterator() {
+    public Iterator<E> iterator() {
         return null;
     }
 }
