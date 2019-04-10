@@ -59,7 +59,13 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
 
 
     public E remove() {
-        return null;
+        if(isEmpty())
+            return null;
+        E top = array[0].data;
+        trickleDown(0);
+        currentSize = currentSize--;
+        modificationCounter++;
+        return top;
     }
 
     public boolean delete(E obj) {
