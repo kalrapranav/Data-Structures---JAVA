@@ -9,7 +9,42 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
     private Wrapper<E>[] array;
     int modificationCounter = 0;
     int currentSize = 0;
+    int totalArraySize;
     public long entryNumber;
+    int DEFAULT_CAPACITY = DEFAULT_MAX_CAPACITY;
+
+    public BinaryHeapPriorityQueue() {
+        currentSize = 0;
+        entryNumber = 0;
+        array = new Wrapper[DEFAULT_CAPACITY];
+    }
+
+    public BinaryHeapPriorityQueue(int totalArraySize) {
+        this.totalArraySize = totalArraySize;
+        currentSize = 0;
+        entryNumber = 0;
+        array = new Wrapper[totalArraySize];
+    }
+
+    public class Wrapper<E> implements Comparable<Wrapper<E>> {
+        E data;
+        public long sequenceNumber;
+
+        public Wrapper(E obj) {
+            data = obj;
+            sequenceNumber = entryNumber++;
+        }
+
+        public int compareTo(Wrapper<E>obj) {
+            int tmp = ((Comparable<E>)data).compareTo(obj.data);
+            if(tmp == 0)
+                return (int) (sequenceNumber - obj.sequenceNumber);
+            return tmp;
+        }
+        public String toString() {
+            return "" + data;
+        }
+    }
 
     public boolean insert(E object) {
         return false;
