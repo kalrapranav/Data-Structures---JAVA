@@ -2,7 +2,9 @@
 package data_structures;
 import java.sql.Wrapper;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements PriorityQueue<E>, Iterable<E> {
 
@@ -110,7 +112,32 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
     }
 
     public Iterator<E> iterator() {
-        return null;
+        return new IteratorHelper();
+    }
+
+    private class IteratorHelper implements Iterator<E> {
+        private int current = 0;
+        private int oldModificationCounter = modificationCounter;
+
+        public boolean hasNext() {
+            if (oldModificationCounter != modificationCounter) {
+                throw new ConcurrentModificationException("");
+            }
+            if (current < currentSize)
+                return true;
+            return false;
+        }
+
+        public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return array[current++].data;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private void trickleUp(int oldSize) {
