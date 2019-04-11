@@ -14,13 +14,13 @@
 import data_structures.*;
 import java.util.concurrent.TimeUnit;
 
-public class p3Tester {
+public class Driver {
     private int [] array;
     private static final int SIZE = 1000;
     private PriorityQueue<Integer> pq;
     private PriorityQueue<PrioritizedItem> pq2;
 
-    public p3Tester() {
+    public Driver() {
         array = new int[SIZE];
         pq = new BinaryHeapPriorityQueue<Integer>(SIZE);
         pq2 = new BinaryHeapPriorityQueue<PrioritizedItem>(SIZE);
@@ -98,8 +98,7 @@ public class p3Tester {
         try {
             for(int i=0; i < SIZE; i++) {
                 //displayIntegers();
-                int temp = pq.remove();
-                if(temp != (i+1))
+                if(pq.remove() != (i+1))
                     throw new RuntimeException("Failed test #2, out of order removal");
             }
 
@@ -913,6 +912,6 @@ public class p3Tester {
     }
 
     public static void main(String [] args) {
-        new p3Tester();
+        new Driver();
     }
 }
