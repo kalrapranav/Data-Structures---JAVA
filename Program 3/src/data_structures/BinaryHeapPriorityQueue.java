@@ -72,9 +72,9 @@ public class BinaryHeapPriorityQueue <E extends Comparable<E>> implements Priori
             return null;
         E top = array[0].data;
         //bring last element at the top
-        array[0].data =  array[currentSize-1].data;
-        currentSize = currentSize--;
+
         trickleDown(0);
+        currentSize = currentSize--;
         modificationCounter++;
         return top;
     }
