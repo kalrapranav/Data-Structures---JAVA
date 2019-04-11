@@ -55,15 +55,53 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
     }
 
 
+    private void trickleUp(int index) {
+        int parent = (int) ((index - 1)/2);
+        Wrapper<E> currentObject = array[index];
+        while ((parent >= 0) && (currentObject.compareTo(array[parent]) < 0)) {
+            array[index] = array[parent];
+            index = parent;
+            parent = (index - 1)>>1;
+        }
+        array[index] = currentObject;
+    }
 
     public E remove() {
         if(isEmpty())
             return null;
         E top = array[0].data;
-        trickleDown(0);
+        //bring last element at the top
+        array[0].data =  array[currentSize-1].data;
         currentSize = currentSize--;
+        trickleDown(0);
         modificationCounter++;
         return top;
+    }
+
+    public void trickleDown(int oldSize) {
+        int current = 0;
+        int child = getNextChild(current);
+        while (child != -1 && array[current].compareTo(array[child]) > 0 && array[child].compareTo(array[currentSize - 1]) <= 0) {
+            Wrapper<E> tmp = (Wrapper<E>) array[current];
+            array[current] = array[child];
+            array[child] = (Wrapper<E>) tmp;
+            current = child;
+            child = getNextChild(current);
+        }
+        array[current] = array[currentSize - 1];
+    }
+
+    private int getNextChild(int current) {
+        int left = (current * 2) + 1;
+        int right = left + 1;
+        if (right < currentSize) {
+            if (array[left].compareTo(array[right]) < 0)
+                return left;
+            return right;
+        }
+        if (left < currentSize)
+            return left;
+        return -1;
     }
 
     public boolean delete(E obj) {
@@ -75,15 +113,16 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
         currentSize = 0;
         entryNumber = 0;
         for (int i = 0; i < size; i++){
-            if ((tempStorage[i].data).compareTo(obj) < 0) {
+            if ((tempStorage[i].data).compareTo(obj) != 0) {
                 insert(tempStorage[i].data);
-            } else {
+            }
+            else {
                 modificationCounter++;
                 removed = true;
             }
         }
 
-        return false;
+        return removed;
     }
 
     public E peek() {
@@ -155,38 +194,4 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
         }
     }
 
-    private void trickleUp(int index) {
-        int parent = (int) ((index - 1)/2);
-        Wrapper<E> currentObject = array[index];
-        while ((parent >= 0) && (currentObject.compareTo(array[parent]) < 0)) {
-            array[index] = array[parent];
-            index = parent;
-            parent = (index - 1)>>1;
-        }
-        array[index] = currentObject;
-    }
-
-    public void trickleDown(int oldSize) {
-        int current = 0;
-        int child = getNextChild(current);
-        while (child != -1 && array[current].compareTo(array[child]) < 0 && array[child].compareTo(array[currentSize - 1]) < 0) {
-            array[current] = array[child];
-            current = child;
-            child = getNextChild(current);
-        }
-        array[current] = array[currentSize - 1];
-    }
-
-    private int getNextChild(int current) {
-        int left = (current * 2) + 1;
-        int right = left + 1;
-        if (right < currentSize) {
-            if (array[left].compareTo(array[right]) < 0)
-                return left;
-            return right;
-        }
-        if (left < currentSize)
-            return left;
-        return -1;
-    }
 }

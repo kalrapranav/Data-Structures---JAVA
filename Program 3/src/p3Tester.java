@@ -98,7 +98,8 @@ public class p3Tester {
         try {
             for(int i=0; i < SIZE; i++) {
                 //displayIntegers();
-                if(pq.remove() != (i+1))
+                int temp = pq.remove();
+                if(temp != (i+1))
                     throw new RuntimeException("Failed test #2, out of order removal");
             }
 
