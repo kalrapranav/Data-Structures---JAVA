@@ -1,13 +1,14 @@
 //WORK IN PROGRESS
 package data_structures;
+
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements PriorityQueue<E>, Iterable<E> {
+public class BinaryHeapPriorityQueue <E extends Comparable<E>> implements PriorityQueue<E>, Iterable<E> {
 
     private Wrapper<E>[] array;
-    int modificationCounter = 0;
+    long modificationCounter = 0;
     int currentSize = 0;
     int totalArraySize;
     public long entryNumber;
@@ -81,10 +82,8 @@ public class BinaryHeapPriorityQueue<E extends Comparable<E>> implements Priorit
     public void trickleDown(int oldSize) {
         int current = 0;
         int child = getNextChild(current);
-        while (child != -1 && array[current].compareTo(array[child]) > 0 && array[child].compareTo(array[currentSize - 1]) <= 0) {
-            Wrapper<E> tmp = (Wrapper<E>) array[current];
+        while (child != -1 && array[current].compareTo(array[child]) < 0 && array[child].compareTo(array[currentSize - 1]) < 0) {
             array[current] = array[child];
-            array[child] = (Wrapper<E>) tmp;
             current = child;
             child = getNextChild(current);
         }
