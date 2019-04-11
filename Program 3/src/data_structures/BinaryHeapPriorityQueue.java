@@ -57,12 +57,17 @@ public class BinaryHeapPriorityQueue <E extends Comparable<E>> implements Priori
 
 
     private void trickleUp(int index) {
-        int parent = (int) ((index - 1)/2);
+//        int parent = (int) ((index - 1)/2);
+
+        index = currentSize-1;
+        int parent = (int) ((index - 1) >> 1);
         Wrapper<E> currentObject = array[index];
-        while ((parent >= 0) && (currentObject.compareTo(array[parent]) < 0)) {
+
+        while ((parent >= 0) &&
+                (currentObject.compareTo(array[parent]) < 0)) {
             array[index] = array[parent];
             index = parent;
-            parent = (index - 1)>>1;
+            parent = (parent - 1)>>1;
         }
         array[index] = currentObject;
     }
