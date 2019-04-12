@@ -3,7 +3,7 @@
  *  Binary heap implementation using an array and the PriorityQueue.java interface
  *  CS310-01
  *  10-April-2019
- *  @author  Pranav Kalra cssc1483
+ *  @author  Pranav Kalra 
  */
 
 package data_structures;
