@@ -26,7 +26,7 @@ public class BinaryHeapPriorityQueue <E extends Comparable<E>> implements Priori
   |   trickleDown(), getNextChild(), Wrapper Class, Iterator Class
   |--------------------------------------------------------------------------*/
 
-    /*===================Class=Variables========================================================*/
+    /*===================Class=Variables=======================================================*/
 
     protected  Wrapper<E>[] array;
     protected long inNum;
