@@ -1,4 +1,4 @@
-public class SinglyLinkedList<E> implements LinkedListInterface<E> {
+public class LinkedList<E> implements LinkedListInterface<E> {
 
     class Node<E> {
         E data;
@@ -17,7 +17,7 @@ public class SinglyLinkedList<E> implements LinkedListInterface<E> {
     private int currentSize;
 
     //constructor
-    public SinglyLinkedList() {
+    public LinkedList() {
         head  = tail = null;
         currentSize = 0;
     }
