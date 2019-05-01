@@ -76,9 +76,8 @@ public class LinkedList<E> implements LinkedListInterface<E> {
         //To get head's data
         E tmp = head.data;
         //Single Element
-        if (head == tail) {
+        if (head == tail)
             head = tail = null;
-        }
         /*
             head = head.next -> this will point head to the
             successive element and the first element will get
@@ -92,8 +91,22 @@ public class LinkedList<E> implements LinkedListInterface<E> {
     }
 
     @Override
-    public E removeLastt() {
-        return null;
+    public E removeLast() {
+        //Empty List
+        if (head == null)
+            return null;
+        //Single Element
+        if (head == tail)
+            removeFirst(); //head = tail = null;
+
+        Node<E> current = head, previous = null;
+        //To iterate to the end of the list
+        while (current != null) {
+            previous.next = null;
+            tail = previous;
+        }
+        currentSize--;
+        return current.data;
     }
 
     @Override
