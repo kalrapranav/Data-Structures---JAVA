@@ -33,7 +33,21 @@ public class SinglyLinkedList<E> implements LinkedListInterface<E> {
 
     @Override
     public void addFirst(E obj) {
+        //create a new node
+        Node<E> node = new Node<E>(obj);
 
+        //Empty List
+        if (head == null) {
+            node.next = null;
+            head = node;
+            currentSize++;
+            return;
+        }
+
+        node.next = head;
+        head = node;
+        currentSize++;
+        return;
     }
 
     @Override
