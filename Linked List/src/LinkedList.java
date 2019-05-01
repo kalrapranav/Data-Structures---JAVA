@@ -69,7 +69,26 @@ public class LinkedList<E> implements LinkedListInterface<E> {
 
     @Override
     public E removeFirst() {
-        return null;
+        //Empty List
+        if (head == null)
+            return null;
+
+        //To get head's data
+        E tmp = head.data;
+        //Single Element
+        if (head == tail) {
+            head = tail = null;
+        }
+        /*
+            head = head.next -> this will point head to the
+            successive element and the first element will get
+            garbage collected
+         */
+        else
+            head = head.next;
+        currentSize--;
+        //return's teh data of first element
+        return tmp;
     }
 
     @Override
