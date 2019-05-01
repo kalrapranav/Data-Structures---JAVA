@@ -25,15 +25,13 @@
       <file leaf-file-name="LinkedList.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/LinkedList.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="653">
-              <caret line="102" column="43" lean-forward="false" selection-start-line="102" selection-start-column="43" selection-end-line="102" selection-end-column="43" />
+            <state relative-caret-position="709">
+              <caret line="124" column="34" lean-forward="false" selection-start-line="124" selection-start-column="34" selection-end-line="124" selection-end-column="34" />
               <folding>
                 <element signature="e#2501#2502#0" expanded="true" />
                 <element signature="e#2529#2530#0" expanded="true" />
-                <element signature="e#2571#2572#0" expanded="true" />
-                <element signature="e#2598#2599#0" expanded="true" />
-                <element signature="e#2642#2643#0" expanded="true" />
-                <element signature="e#2669#2670#0" expanded="true" />
+                <element signature="e#2932#2933#0" expanded="true" />
+                <element signature="e#2959#2960#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -306,10 +304,8 @@
           <folding>
             <element signature="e#2501#2502#0" expanded="true" />
             <element signature="e#2529#2530#0" expanded="true" />
-            <element signature="e#2571#2572#0" expanded="true" />
-            <element signature="e#2598#2599#0" expanded="true" />
-            <element signature="e#2642#2643#0" expanded="true" />
-            <element signature="e#2669#2670#0" expanded="true" />
+            <element signature="e#2932#2933#0" expanded="true" />
+            <element signature="e#2959#2960#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -340,15 +336,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/LinkedList.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="653">
-          <caret line="102" column="43" lean-forward="false" selection-start-line="102" selection-start-column="43" selection-end-line="102" selection-end-column="43" />
+        <state relative-caret-position="709">
+          <caret line="124" column="34" lean-forward="false" selection-start-line="124" selection-start-column="34" selection-end-line="124" selection-end-column="34" />
           <folding>
             <element signature="e#2501#2502#0" expanded="true" />
             <element signature="e#2529#2530#0" expanded="true" />
-            <element signature="e#2571#2572#0" expanded="true" />
-            <element signature="e#2598#2599#0" expanded="true" />
-            <element signature="e#2642#2643#0" expanded="true" />
-            <element signature="e#2669#2670#0" expanded="true" />
+            <element signature="e#2932#2933#0" expanded="true" />
+            <element signature="e#2959#2960#0" expanded="true" />
           </folding>
         </state>
       </provider>

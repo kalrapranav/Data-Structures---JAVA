@@ -116,6 +116,13 @@ public class LinkedList<E> implements LinkedListInterface<E> {
 
     @Override
     public E find(E obj) {
+        Node<E> current = head, previous = null;
+        //find the element by iterating through the list
+        while (current != null) {
+            if (((Comparable<E>) current.data).compareTo(obj) == 0)
+                return current.data;
+        }
+        //if not found return null
         return null;
     }
 
