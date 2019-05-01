@@ -111,12 +111,19 @@ public class LinkedList<E> implements LinkedListInterface<E> {
 
     @Override
     public boolean contains(E obj) {
+        Node<E> current = head;
+        //find the element by iterating through the list
+        while (current != null) {
+            if (((Comparable<E>) current.data).compareTo(obj) == 0)
+                return true;
+        }
+        //if not found return false
         return false;
     }
 
     @Override
     public E find(E obj) {
-        Node<E> current = head, previous = null;
+        Node<E> current = head;
         //find the element by iterating through the list
         while (current != null) {
             if (((Comparable<E>) current.data).compareTo(obj) == 0)
