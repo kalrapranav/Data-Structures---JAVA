@@ -52,7 +52,19 @@ public class LinkedList<E> implements LinkedListInterface<E> {
 
     @Override
     public void addLast(E obj) {
+        Node<E> node = new Node<E>(obj);
 
+        //Empty List
+        if (head == null) {
+            head = tail = node;
+            currentSize++;
+            return;
+        }
+        //Single Element
+        tail.next = node;
+        tail = node;
+        currentSize++;
+        return;
     }
 
     @Override
