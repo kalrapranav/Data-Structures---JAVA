@@ -1,3 +1,8 @@
+import org.omg.CosNaming.BindingIteratorHelper;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class LinkedList<E> implements LinkedListInterface<E> {
 
     class Node<E> {
@@ -9,6 +14,25 @@ public class LinkedList<E> implements LinkedListInterface<E> {
             data = obj;
             next = null;
             previous = null;
+        }
+    }
+
+    class IteratorHelper implements Iterator<E> {
+        //create a tmp pointer to point at the beginning
+        //of the list
+        Node<E> index;
+        public IteratorHelper() {
+            index = head;
+        }
+        public boolean hasNext(){
+            return (index != null);
+        }
+        public E next(){
+            if (!hasNext())
+                throw new NoSuchElementException();
+            E val = index.data;
+            index = index.next;
+            return val;
         }
     }
 
@@ -115,7 +139,7 @@ public class LinkedList<E> implements LinkedListInterface<E> {
         //find the element by iterating through the list
         while (current != null) {
             if (((Comparable<E>) current.data).compareTo(obj) == 0)
-                return true;
+                 return true;
         }
         //if not found return false
         return false;
@@ -150,4 +174,20 @@ public class LinkedList<E> implements LinkedListInterface<E> {
         }
         return null;
     }
+
+    @Override
+    public Iterator<E> iterator() {
+        return (Iterator<E>) new IteratorHelper();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+

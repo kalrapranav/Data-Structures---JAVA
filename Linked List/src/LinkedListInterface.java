@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 public interface LinkedListInterface<E> {
 
      public void addFirst(E obj);
@@ -7,5 +9,6 @@ public interface LinkedListInterface<E> {
      public boolean contains(E obj);
      public E find(E obj);
      public E remove(E obj);
+     public Iterator<E> iterator();
 
 }
