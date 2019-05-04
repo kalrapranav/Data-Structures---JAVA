@@ -135,6 +135,19 @@ public class LinkedList<E> implements LinkedListInterface<E> {
 
     @Override
     public E remove(E obj) {
+        Node<E> current = head, previous = null;
+        while (current != null) {
+            if (((Comparable<E>)current.data).compareTo(obj) == 0) {
+                //Single element list
+                if (current == head)
+                    return removeFirst();
+                if (current == tail)
+                    return removeLast();
+                currentSize--;
+                previous.next = current.next;
+                return current.data;
+            }
+        }
         return null;
     }
 }
