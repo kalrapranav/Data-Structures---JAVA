@@ -1,8 +1,38 @@
 package data_structures;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
-public class Hashtable<K extends Comparable<K>, V> implements DictionaryADT<K,V> {
+public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> {
+
+    class HashElement<K,V> implements Comparable<HashElement<K,V>> {
+        K key;
+        V value;
+        public HashElement(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+        public int compareTo(HashElement<K,V> O) {
+            return (((Comparable<K>)O.key).compareTo(this.key));
+        }
+    }
+    //currentSize and Size of the array
+    int numElements, tableSize;
+    double maxLoadFactor;
+    LinkedList<HashElement<K,V>>[] h_array;
+
+    //Constructor for Hashtable
+    public Hashtable (int tableSize) {
+        this.tableSize = tableSize;
+        h_array = (LinkedList<HashElement<K,V>> []) new LinkedList[tableSize];
+
+        for (int i = 0; i < tableSize; i++) {
+            h_array[i] = new LinkedList<HashElement<K,V>>();
+        }
+        maxLoadFactor = 0.75;
+        numElements = 0;
+    }
+
 
     @Override
     public boolean contains(K key) {
