@@ -41,12 +41,35 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
 
     @Override
     public boolean add(K key, V value) {
-        return false;
+        if (loadFactor() > maxLoadFactor)
+            resize(tableSize*2);
+        HashElement<K,V> he = new HashElement(key, value);
+        int hashVal = key.hashCode();
+        hashVal = hashVal & 0x7FFFFFFF;
+        hashVal = hashVal % tableSize;
+
+        h_array[hashVal].add(he);
+        numElements++;
+        return true;
+    }
+
+    private void resize(int i) {
+    }
+
+    private double loadFactor() {
+        double loadFactor = 0;
+        loadFactor = numElements/tableSize;
+        return loadFactor;
     }
 
     @Override
     public boolean delete(K key) {
-        return false;
+        int hashVal = key.hashCode();
+        hashVal = hashVal & 0x7FFFFFFF;
+        hashVal = hashVal % tableSize;
+
+        h_array[hashVal].remove();
+        return true;
     }
 
     @Override

@@ -10,23 +10,24 @@ public class ProductLookup {
 
     // Returns the StockItem associated with the given SKU, if it is
     // in the ProductLookup, null if it is not.
-    public StockItem getItem(String SKU)
+    //EDIT THIS
+    //public StockItem getItem(String SKU) {return }
 
     // Returns the retail price associated with the given SKU value.
     // -.01 if the item is not in the dictionary
-    public float getRetail(String SKU) {}
+    public float getRetail(String SKU) {return 0;}
 
     // Returns the cost price associated with the given SKU value.
     // -.01 if the item is not in the dictionary
-    public float getCost(String SKU) {}
+    public float getCost(String SKU) {return 0;}
 
     // Returns the description of the item, null if not in the dictionary.
-    public String getDescription(String SKU){}
+    public String getDescription(String SKU){return null;}
 
     // Deletes the StockItem associated with the SKU if it is
     // in the ProductLookup.  Returns true if it was found and
     // deleted, otherwise false.
-    public boolean deleteItem(String SKU){}
+    public boolean deleteItem(String SKU){return true;}
 
     // Prints a directory of all StockItems with their associated
     // price, in sorted order (ordered by SKU).
@@ -37,8 +38,10 @@ public class ProductLookup {
     public void print(String vendor){}
 
     // An iterator of the SKU keys.
-    public Iterator<String> keys(){}
+   // public Iterator<String> keys(){return IteratorHelper();}
+
+
 
     // An iterator of the StockItem values.
-    public Iterator<StockItem> values()}
+   // public Iterator<StockItem> values() {return IteratorHelper();}
 }
