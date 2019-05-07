@@ -4,9 +4,11 @@ import java.util.Iterator;
 
 public class BinarySearchTree<K extends Comparable<K>, V> implements DictionaryADT<K,V>{
     /**
-     * Binary Search Tree is gonna use array as a medium to store data
-     * so, the complexity of add, remove and find operation becomes O(1)
-     * for all these functions we will use the key as teh index
+     * > Binary Search Tree is gonna use array as a medium to store data
+     * > so, the complexity of add, remove and find operation becomes O(1)-O(log(n))
+     * > for all these functions we wil use the index of the array
+     * > Key and Value will be stored in every node which will be given by the user and
+     *   would be different from the index we are storing (unlike hash tables)
      * */
 
     /**
@@ -26,6 +28,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements DictionaryA
             this.val = val;
         }
     }
+    private Node root;
 
     @Override
     public boolean contains(Comparable key) {
