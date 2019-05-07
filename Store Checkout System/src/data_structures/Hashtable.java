@@ -3,9 +3,15 @@ package data_structures;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> {
 
+    /*
+    * This class allows to create a hashElement which
+    * will take two arguments and Key and Value and each hashElement
+    * would have those two values which can be assesed by the .key/value
+    * */
     class HashElement<K,V> implements Comparable<HashElement<K,V>> {
         K key;
         V value;
@@ -13,6 +19,7 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
             this.key = key;
             this.value = value;
         }
+        //compareTo method compares the keys of two hashElements
         public int compareTo(HashElement<K,V> O) {
             return (((Comparable<K>)O.key).compareTo(this.key));
         }
@@ -20,6 +27,11 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
     //currentSize and Size of the array
     int numElements, tableSize;
     double maxLoadFactor;
+
+    /*
+    * h_array array will have a elements of type LinkedList<hashElement<K,V>>
+    * and every node of LinkedList will be of type hashElement<K,V>
+    * */
     LinkedList<HashElement<K,V>>[] h_array;
 
     //Constructor for Hashtable
@@ -28,6 +40,7 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         h_array = (LinkedList<HashElement<K,V>> []) new LinkedList[tableSize];
 
         for (int i = 0; i < tableSize; i++) {
+            //sets a LinkedList<HashElement<K,V>> at every element of the array
             h_array[i] = new LinkedList<HashElement<K,V>>();
         }
         maxLoadFactor = 0.75;
@@ -54,7 +67,22 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         return true;
     }
 
-    private void resize(int i) {
+    private void resize(int newSize) {
+        //Creates a new array of newSize and type LinkedList<HashElement<K,V>> 
+        LinkedList<HashElement<K,V>> [] new_array = 
+                (LinkedList<HashElement<K,V>> []) new LinkedList[newSize];
+        for (int i = 0; i < newSize; i++) {
+            //set LinkedList<HashElement<K,V>> to every element of new_array
+            new_array[i] = new LinkedList<HashElement<K,V>>();
+        }
+        for (K key : this) {
+            V value = getValue(K key);
+            HashElement<K,V> he = new HashElement<K,V>(key, value);
+            int hashVal = ((key.hashCode()) & 0x7FFFFFFF) % newSize;
+            new_array[hashVal].add(he);
+            h_array = new_array;
+            tableSize = newSize;
+        }
     }
 
     private double loadFactor() {
@@ -92,7 +120,7 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
 
     @Override
     public int size() {
-        return 0;
+        return numElements;
     }
 
     @Override
@@ -102,22 +130,47 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
 
     @Override
     public boolean isEmpty() {
+        if (numElements == 0)
+            return true;
         return false;
     }
 
     @Override
     public void clear() {
-
+        for (int i = 0; i < tableSize; i++) {
+            h_array[i] = null;
+        }
     }
 
     @Override
     public Iterator<K> keys() {
-        return null;
+        return new IteratorHelper();
     }
 
     @Override
     public Iterator<V> values() {
         return null;
+    }
+
+    class IteratorHelper<T> implements Iterator<T> {
+        T[] keys;
+        int position;
+        public IteratorHelper() {
+            keys = (T[]) Object[numElements];
+            int p = 0;
+            for (int i = 0)
+
+
+        }
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public T next() {
+            return null;
+        }
     }
 
     //---------------------------------------------------------------------------------------
