@@ -1,5 +1,6 @@
 package data_structures;
 
+import java.security.Key;
 import java.util.Iterator;
 
 public class BinarySearchTree<K extends Comparable<K>, V> implements DictionaryADT<K,V>{
@@ -47,8 +48,34 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements DictionaryA
      * */
     @Override
     public boolean add(Comparable key, Object value) {
-
-        return false;
+        Node<K,V> newNode = (Node<K, V>) new Node<Comparable,Object>(key, value);
+        if (root == null)
+            root = newNode;
+        else {
+            Node current = root;
+            Node parent;
+            for (;;) {
+                parent = current;
+                if (((Comparable<K>)key).compareTo((key)current.key) < 0) {
+                    current = current.leftChild;
+                    if (current == null) {
+                        parent.leftChild = newNode;
+                        currentSize++;
+                        return true;
+                    }
+                }
+                else {
+                    current = current.rightChild;
+                    if (current == null) {
+                        parent.rightChild = newNode;
+                        currentSize++;
+                        return true;
+                    }
+                }
+            }
+        }
+        currentSize++;
+        return true;
     }
 
     public void trickleUp(int node){}
