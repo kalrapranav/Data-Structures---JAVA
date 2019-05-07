@@ -35,10 +35,16 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements DictionaryA
         return false;
     }
 
+    /**
+     * Add to the last available space of teh tree > check heap violation
+     * and trickleUp()
+     * */
     @Override
     public boolean add(Comparable key, Object value) {
         return false;
     }
+
+    public void trickleUp(int node){}
 
     @Override
     public boolean delete(Comparable key) {
