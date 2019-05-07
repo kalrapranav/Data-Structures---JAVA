@@ -158,18 +158,24 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         public IteratorHelper() {
             keys = (T[]) Object[numElements];
             int p = 0;
-            for (int i = 0)
-
-
+            for (int i = 0; i < tableSize; i++) {
+                LinkedList<HashElement<K,V>> list = h_array[i];
+                for (HashElement<K,V> h : list) {
+                    keys[p++] = (T) h.key();
+                }
+            }
+            position = 0;
         }
         @Override
         public boolean hasNext() {
-            return false;
+            return position < keys.length;
         }
 
         @Override
         public T next() {
-            return null;
+            if (!hasNext())
+                return null;
+            return keys[position];
         }
     }
 
