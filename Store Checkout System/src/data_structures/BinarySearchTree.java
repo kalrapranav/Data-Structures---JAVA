@@ -16,19 +16,25 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements DictionaryA
      * positions of the tree. As, the constructor of the class takes K,V and
      * assigns it to Key and Value
      * */
-    private class Node {
+    private class Node<K,V> {
         private K key;
-        private V val;
-        private Node left;
-        private Node right;
-        private int count;
+        private V value;
+        private Node<K,V> leftChild;
+        private Node<K,V> rightChild;
 
-        public Node(K key, V val) {
+        public Node(K key,V value) {
             this.key = key;
-            this.val = val;
+            this.value = value;
+            leftChild = rightChild = null;
         }
     }
-    private Node root;
+    private Node<K,V> root;
+    private int currentSize;
+
+    public BinarySearchTree() {
+        root = null;
+        currentSize = 0;
+    }
 
     @Override
     public boolean contains(Comparable key) {
@@ -41,6 +47,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements DictionaryA
      * */
     @Override
     public boolean add(Comparable key, Object value) {
+
         return false;
     }
 
@@ -53,7 +60,18 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements DictionaryA
 
     @Override
     public Object getValue(Comparable key) {
-        return null;
+        if (root == null)
+            return null;
+        Node<K,V> current = root;
+        while(((Comparable<K>) current.key).compareTo((K)key) != 0) {
+            if (((Comparable<K>)key).compareTo((K)current.key) < 0)
+                current = current.leftChild;
+            else
+                current = current.rightChild;
+            if (current == null)
+                return null;
+        }
+        return current.value;
     }
 
     @Override

@@ -38,10 +38,10 @@ public class ProductLookup {
     public void print(String vendor){}
 
     // An iterator of the SKU keys.
-   // public Iterator<String> keys(){return IteratorHelper();}
+    public Iterator<String> keys(){}
 
 
 
     // An iterator of the StockItem values.
-   // public Iterator<StockItem> values() {return IteratorHelper();}
+    public Iterator<StockItem> values() {}
 }
