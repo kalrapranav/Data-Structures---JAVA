@@ -10,22 +10,58 @@ public class StockItem implements Comparable<StockItem> {
     float retail;
 
     // Constructor.  Creates a new StockItem instance.
-    public StockItem(String SKU, String description, String vendor,float cost, float retail){}
+    public StockItem(String SKU, String description, String vendor,
+                     float cost, float retail) {
+        this.SKU = SKU;
+        this.description = description;
+        this.vendor = vendor;
+        this.cost = cost;
+        this.retail = retail;
+
+    }
 
     // Follows the specifications of the Comparable Interface.
     // The SKU is always used for comparisons, in dictionary order.
+    public int compareTo(StockItem n) {
 
-    public int compareTo(StockItem n) {return 0;}
+        return SKU.compareTo(n.SKU);
+    }
+
     // Returns an int representing the hashCode of the SKU.
+    public int hashCode() {
 
-    public int hashCode() {return 0;}
+        return SKU.hashCode();
+    }
+
     // standard get methods
+    public String getDescription() {
 
-    public String getDescription() {return null;}
-    public String getVendor() {return null;}
-    public float getCost() {return 0;}
-    public float getRetail() {return 0;}
+        return description;
 
-    // All fields in one line, in order
-    public String toString() {return null;}
+    }
+
+    public String getVendor() {
+
+
+        return vendor;
+
+    }
+
+    public float getCost() {
+
+        return cost;
+    }
+
+    public float getRetail() {
+
+        return retail;
+    }
+
+    @Override
+    public String toString() {
+
+        return "StockItem [SKU=" + SKU + ", description=" + description + ", vendor=" + vendor + ", cost=" + cost
+                + ", retail=" + retail + "]";
+
+    }
 }

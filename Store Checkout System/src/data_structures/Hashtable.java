@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
+import java.util.ConcurrentModificationException;
 
 public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> {
 
@@ -25,7 +26,7 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         }
     }
     //currentSize and Size of the array
-    int numElements, tableSize;
+    int numElements, tableSize, currentSize, modCounter, maxSize;
     double maxLoadFactor;
 
     /*
@@ -36,54 +37,74 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
 
     //Constructor for Hashtable
     public Hashtable (int tableSize) {
-        this.tableSize = tableSize;
+        currentSize = 0;
+        modCounter = 0;
+        maxSize = tableSize;
+        tableSize = (int) (tableSize * 1.5f);
+
+        //this.tableSize = tableSize;
         h_array = (LinkedList<HashElement<K,V>> []) new LinkedList[tableSize];
 
         for (int i = 0; i < tableSize; i++) {
             //sets a LinkedList<HashElement<K,V>> at every element of the array
             h_array[i] = new LinkedList<HashElement<K,V>>();
         }
-        maxLoadFactor = 0.75;
-        numElements = 0;
+        //maxLoadFactor = 0.75;
+        //numElements = 0;
     }
 
+    /**
+     * Provided Prof. Rob Edwards,
+     * To get a corresponding hashCode for a key
+     * */
+    private int getHashCode(K key) {
+
+        return (key.hashCode() & 0x7FFFFFFF) % tableSize;
+    }
 
     @Override
     public boolean contains(K key) {
+        int temp = getHashCode(key);
+
+        for (HashElement<K, V> node : h_array[temp]) {
+            if (key.compareTo(node.key) == 0)
+                return true;
+        }
+
         return false;
     }
 
     @Override
     public boolean add(K key, V value) {
-        if (loadFactor() > maxLoadFactor)
-            resize(tableSize*2);
-        HashElement<K,V> he = new HashElement(key, value);
-        int hashVal = key.hashCode();
-        hashVal = hashVal & 0x7FFFFFFF;
-        hashVal = hashVal % tableSize;
+        if (isFull())
+            return false;
+        if (contains(key) == true)
+            return false;
 
-        h_array[hashVal].add(he);
-        numElements++;
+        h_array[getHashCode(key)].add(new HashElement<K, V>(key, value));// insert the given element.
+
+        currentSize++;
+        modCounter++;
         return true;
     }
 
-    private void resize(int newSize) {
-        //Creates a new array of newSize and type LinkedList<HashElement<K,V>> 
-        LinkedList<HashElement<K,V>> [] new_array = 
-                (LinkedList<HashElement<K,V>> []) new LinkedList[newSize];
-        for (int i = 0; i < newSize; i++) {
-            //set LinkedList<HashElement<K,V>> to every element of new_array
-            new_array[i] = new LinkedList<HashElement<K,V>>();
-        }
-        for (K key : this) {
-            V value = getValue(K key);
-            HashElement<K,V> he = new HashElement<K,V>(key, value);
-            int hashVal = ((key.hashCode()) & 0x7FFFFFFF) % newSize;
-            new_array[hashVal].add(he);
-            h_array = new_array;
-            tableSize = newSize;
-        }
-    }
+//    private void resize(int newSize) {
+//        //Creates a new array of newSize and type LinkedList<HashElement<K,V>>
+//        LinkedList<HashElement<K,V>> [] new_array =
+//                (LinkedList<HashElement<K,V>> []) new LinkedList[newSize];
+//        for (int i = 0; i < newSize; i++) {
+//            //set LinkedList<HashElement<K,V>> to every element of new_array
+//            new_array[i] = new LinkedList<HashElement<K,V>>();
+//        }
+//        for (K key : this) {
+//            V value = getValue(K key);
+//            HashElement<K,V> he = new HashElement<K,V>(key, value);
+//            int hashVal = ((key.hashCode()) & 0x7FFFFFFF) % newSize;
+//            new_array[hashVal].add(he);
+//            h_array = new_array;
+//            tableSize = newSize;
+//        }
+//    }
 
     private double loadFactor() {
         double loadFactor = 0;
@@ -93,91 +114,180 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
 
     @Override
     public boolean delete(K key) {
-        int hashVal = key.hashCode();
-        hashVal = hashVal & 0x7FFFFFFF;
-        hashVal = hashVal % tableSize;
+        if (isEmpty())
+            return false;
+        if (contains(key) == false)
+            return false;
 
-        h_array[hashVal].remove();
+        h_array[getHashCode(key)].remove(new HashElement<K, V>(key, null));
+
+        currentSize--;
+        modCounter++;
         return true;
     }
 
     @Override
     public V getValue(K key) {
-        int hashVal = key.hashCode();
-        hashVal = hashVal & 0x7FFFFFFF;
-        hashVal = hashVal % tableSize;
+        if(!contains(key))
+            return null;
+        int temp = getHashCode(key);
 
-        //for (HashElement<K,V> he : h_array) {
+        for (HashElement<K, V> node : h_array[temp]) {
+            if (key.compareTo(node.key) == 0)
+                return node.value;
+        }
 
-        //}
         return null;
     }
 
     @Override
     public K getKey(V value) {
+        for (int i = 0; i < tableSize; i++) {
+
+            for (HashElement<K, V> node : h_array[i]) {
+                if (value.toString().compareTo(node.value.toString()) == 0) {
+                    return node.key;
+                }
+            }
+        }
         return null;
     }
 
     @Override
     public int size() {
-        return numElements;
+        return currentSize;
     }
 
     @Override
     public boolean isFull() {
-        return false;
+        return currentSize == maxSize;
     }
 
     @Override
     public boolean isEmpty() {
-        if (numElements == 0)
+        if (currentSize == 0)
             return true;
         return false;
     }
 
     @Override
     public void clear() {
-        for (int i = 0; i < tableSize; i++) {
-            h_array[i] = null;
-        }
+        currentSize = 0;
+        modCounter++;
+
+        // Given from the book.
+        h_array = new LinkedList[tableSize];
+        for (int i = 0; i < tableSize; i++)
+            h_array[i] = new LinkedList<HashElement<K,V>>();
     }
 
     @Override
     public Iterator<K> keys() {
-        return new IteratorHelper();
+        return new KeyIteratorHelper();
     }
 
     @Override
     public Iterator<V> values() {
-        return null;
+        return new ValueIteratorHelper();
     }
 
-    class IteratorHelper<T> implements Iterator<T> {
-        T[] keys;
-        int position;
+    // From the book.
+    abstract class IteratorHelper<E> implements Iterator<E> {
+        protected HashElement<K, V>[] nodes;
+        protected int idx;
+        protected long modCheck;
+
         public IteratorHelper() {
-            keys = (T[]) Object[numElements];
-            int p = 0;
-            for (int i = 0; i < tableSize; i++) {
-                LinkedList<HashElement<K,V>> list = h_array[i];
-                for (HashElement<K,V> h : list) {
-                    keys[p++] = (T) h.key();
-                }
-            }
-            position = 0;
-        }
-        @Override
-        public boolean hasNext() {
-            return position < keys.length;
+            nodes = new HashElement[currentSize];
+            idx = 0;
+            int j = 0;
+            modCheck = modCounter;
+
+            for (int i = 0; i < tableSize; i++)
+                for (HashElement<K, V> n : h_array[i])
+                    nodes[j++] = n;
+            sort();
         }
 
-        @Override
-        public T next() {
-            if (!hasNext())
-                return null;
-            return keys[position];
+        public boolean hasNext() {
+            if (modCheck != modCounter)
+                throw new ConcurrentModificationException();
+
+            return (idx < currentSize);
+        }
+
+        public abstract E next();
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void sort() {
+            quickSortArray(0, nodes.length - 1);
+        }
+
+        private void quickSortArray(int left, int right) {
+            if (right - left <= 0)
+                return;
+
+            HashElement pivot = nodes[right];
+            int partition = getPartition(left, right, pivot);
+            quickSortArray(left, partition - 1);
+            quickSortArray(partition + 1, right);
+        }
+
+        private int getPartition(int left, int right, HashElement pivot) {
+            int lPtr = left - 1;
+            int rPtr = right;
+
+            for (;;) {
+                while (pivot.compareTo(nodes[++lPtr]) > 0)
+                    ;
+                while (rPtr > 0 && (pivot.compareTo(nodes[--rPtr]) < 0))
+                    ;
+                if (lPtr >= rPtr)
+                    break;
+                else
+                    swap(lPtr, rPtr);
+            }
+
+            swap(lPtr, right);
+            return lPtr;
+        }
+
+        private void swap(int one, int two) {
+            HashElement temp = nodes[one];
+            nodes[one] = nodes[two];
+            nodes[two] = temp;
         }
     }
+
+    class KeyIteratorHelper<K> extends IteratorHelper<K> {
+        public KeyIteratorHelper() {
+            super();
+        }
+
+        public K next() {
+            return (K) nodes[idx++].key;
+        }
+    }
+
+    class ValueIteratorHelper<V> extends IteratorHelper<V> {
+        public ValueIteratorHelper() {
+            super();
+        }
+
+        public V next() {
+            return (V) nodes[idx++].value;
+        }
+
+        public HashElement<K, V> iterNode() {
+            return (HashElement<K, V>) nodes[idx];
+        }
+    }
+
+}
+
 
     //---------------------------------------------------------------------------------------
     //----------LINKED_LIST------------------------------------------------------------------
@@ -393,7 +503,7 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         }
     }
 
-    private interface ListADT<E> extends Iterable<E> {
+     interface ListADT<E> extends Iterable<E> {
 
 
         //  Adds the Object obj to the beginning of the list
@@ -403,27 +513,27 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         public void addLast(E o);
 
         //  Removes the first Object in the list and returns it.
-//  Returns null if the list is empty.
+        //  Returns null if the list is empty.
         public E removeFirst();
 
         //  Removes the last Object in the list and returns it.
-//  Returns null if the list is empty.
+        //  Returns null if the list is empty.
         public E removeLast();
 
         //  Returns the first Object in the list, but does not remove it.
-//  Returns null if the list is empty.
+        //  Returns null if the list is empty.
         public E peekFirst();
 
         //  Returns the last Object in the list, but does not remove it.
-//  Returns null if the list is empty.
+        //  Returns null if the list is empty.
         public E peekLast();
 
         //  Finds and returns the Object obj if it is in the list, otherwise
-//  returns null.  Does not modify the list in any way
+        //  returns null.  Does not modify the list in any way
         public E find(E obj);
 
         //  Removes the first instance of thespecific Object obj from the list, if it exists.
-//  Returns true if the Object obj was found and removed, otherwise false
+        //  Returns true if the Object obj was found and removed, otherwise false
         public boolean remove(E obj);
 
         //  The list is returned to an empty state.
@@ -442,10 +552,10 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         public int size();
 
         //  Returns an Iterator of the values in the list, presented in
-//  the same order as the list.
+        //  the same order as the list.
         public Iterator<E> iterator();
 
     }
 
 
-}
+
