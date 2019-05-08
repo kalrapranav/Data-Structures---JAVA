@@ -1,4 +1,3 @@
-package Testers;
 
 public class ProductTester {
     private ProductLookup lookup;
