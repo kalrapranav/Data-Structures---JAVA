@@ -1,72 +1,58 @@
+
 package data_structures;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
 import java.util.ConcurrentModificationException;
 
-public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> {
+public class Hashtable<K extends Comparable<K>, V> implements DictionaryADT<K, V> {
 
-    /*
-    * This class allows to create a hashElement which
-    * will take two arguments and Key and Value and each hashElement
-    * would have those two values which can be assesed by the .key/value
-    * */
-    class HashElement<K,V> implements Comparable<HashElement<K,V>> {
+    private LinkedList<DictionaryNode<K, V>>[] list;
+    int maxSize;
+    int tableSize;
+    int currentSize;
+    int modCounter;
+
+    // Given from the book
+    private class DictionaryNode<K, V> implements Comparable<DictionaryNode<K, V>> {
         K key;
         V value;
-        public HashElement(K key, V value) {
+
+        public DictionaryNode(K key, V value) {
+
             this.key = key;
             this.value = value;
         }
-        //compareTo method compares the keys of two hashElements
-        public int compareTo(HashElement<K,V> O) {
-            return (((Comparable<K>)O.key).compareTo(this.key));
+
+        public int compareTo(DictionaryNode<K, V> node) {
+
+            return ((Comparable<K>) key).compareTo((K) node.key);
         }
     }
-    //currentSize and Size of the array
-    int numElements, tableSize, currentSize, modCounter, maxSize;
-    double maxLoadFactor;
 
-    /*
-    * h_array array will have a elements of type LinkedList<hashElement<K,V>>
-    * and every node of LinkedList will be of type hashElement<K,V>
-    * */
-    LinkedList<HashElement<K,V>>[] h_array;
-
-    //Constructor for Hashtable
-    public Hashtable (int tableSize) {
+    public Hashtable(int max) {
         currentSize = 0;
         modCounter = 0;
-        maxSize = tableSize;
-        tableSize = (int) (tableSize * 1.5f);
+        maxSize = max;
+        tableSize = (int) (max * 1.5f);
 
-        //this.tableSize = tableSize;
-        h_array = (LinkedList<HashElement<K,V>> []) new LinkedList[tableSize];
-
-        for (int i = 0; i < tableSize; i++) {
-            //sets a LinkedList<HashElement<K,V>> at every element of the array
-            h_array[i] = new LinkedList<HashElement<K,V>>();
-        }
-        //maxLoadFactor = 0.75;
-        //numElements = 0;
+        // Given from the book.
+        list = new LinkedList[tableSize];
+        for (int i = 0; i < tableSize; i++)
+            list[i] = new LinkedList<DictionaryNode<K, V>>();
     }
 
-    /**
-     * Provided Prof. Rob Edwards,
-     * To get a corresponding hashCode for a key
-     * */
     private int getHashCode(K key) {
 
-        return (key.hashCode() & 0x7FFFFFFF) % tableSize;
+        return (key.hashCode() & 0x7FFFFFFF) % tableSize;// provided in the book
     }
 
-    @Override
+    // Returns true if the dictionary has an object identified by
+    // key in it, otherwise false.
     public boolean contains(K key) {
         int temp = getHashCode(key);
 
-        for (HashElement<K, V> node : h_array[temp]) {
+        for (DictionaryNode<K, V> node : list[temp]) {
             if (key.compareTo(node.key) == 0)
                 return true;
         }
@@ -74,65 +60,47 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         return false;
     }
 
-    @Override
+    // Adds the given key/value pair to the dictionary. Returns
+    // false if the dictionary is full, or if the key is a duplicate.
+    // Returns true if addition succeeded.
     public boolean add(K key, V value) {
+
         if (isFull())
             return false;
         if (contains(key) == true)
             return false;
 
-        h_array[getHashCode(key)].add(new HashElement<K, V>(key, value));// insert the given element.
+        list[getHashCode(key)].insert(new DictionaryNode<K, V>(key, value));// insert the given element.
 
         currentSize++;
         modCounter++;
         return true;
     }
 
-//    private void resize(int newSize) {
-//        //Creates a new array of newSize and type LinkedList<HashElement<K,V>>
-//        LinkedList<HashElement<K,V>> [] new_array =
-//                (LinkedList<HashElement<K,V>> []) new LinkedList[newSize];
-//        for (int i = 0; i < newSize; i++) {
-//            //set LinkedList<HashElement<K,V>> to every element of new_array
-//            new_array[i] = new LinkedList<HashElement<K,V>>();
-//        }
-//        for (K key : this) {
-//            V value = getValue(K key);
-//            HashElement<K,V> he = new HashElement<K,V>(key, value);
-//            int hashVal = ((key.hashCode()) & 0x7FFFFFFF) % newSize;
-//            new_array[hashVal].add(he);
-//            h_array = new_array;
-//            tableSize = newSize;
-//        }
-//    }
-
-    private double loadFactor() {
-        double loadFactor = 0;
-        loadFactor = numElements/tableSize;
-        return loadFactor;
-    }
-
-    @Override
+    // Deletes the key/value pair identified by the key parameter.
+    // Returns true if the key/value pair was found and removed,
+    // otherwise false.
     public boolean delete(K key) {
         if (isEmpty())
             return false;
         if (contains(key) == false)
             return false;
 
-        h_array[getHashCode(key)].remove(new HashElement<K, V>(key, null));
+        list[getHashCode(key)].delete(new DictionaryNode<K, V>(key, null));
 
         currentSize--;
         modCounter++;
         return true;
     }
 
-    @Override
+    // Returns the value associated with the parameter key. Returns
+    // null if the key is not found or the dictionary is empty.
     public V getValue(K key) {
         if(!contains(key))
             return null;
         int temp = getHashCode(key);
 
-        for (HashElement<K, V> node : h_array[temp]) {
+        for (DictionaryNode<K, V> node : list[temp]) {
             if (key.compareTo(node.key) == 0)
                 return node.value;
         }
@@ -140,11 +108,15 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         return null;
     }
 
-    @Override
+    // Returns the key associated with the parameter value. Returns
+    // null if the value is not found in the dictionary. If more
+    // than one key exists that matches the given value, returns the
+    // first one found.
     public K getKey(V value) {
+
         for (int i = 0; i < tableSize; i++) {
 
-            for (HashElement<K, V> node : h_array[i]) {
+            for (DictionaryNode<K, V> node : list[i]) {
                 if (value.toString().compareTo(node.value.toString()) == 0) {
                     return node.key;
                 }
@@ -153,58 +125,77 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         return null;
     }
 
-    @Override
+    // Returns the number of key/value pairs currently stored
+    // in the dictionary
     public int size() {
+
         return currentSize;
     }
 
-    @Override
+    // Returns true if the dictionary is at max capacity
     public boolean isFull() {
         return currentSize == maxSize;
+		/*
+		if (0.75 <= ((double) currentSize / tableSize)) //use load factor
+			return true;
+
+		return false;
+		*/
     }
 
-    @Override
+    // Returns true if the dictionary is empty
     public boolean isEmpty() {
+
         if (currentSize == 0)
             return true;
+
         return false;
+
     }
 
-    @Override
+    // Returns the Dictionary object to an empty state.
     public void clear() {
         currentSize = 0;
         modCounter++;
 
         // Given from the book.
-        h_array = new LinkedList[tableSize];
+        list = new LinkedList[tableSize];
         for (int i = 0; i < tableSize; i++)
-            h_array[i] = new LinkedList<HashElement<K,V>>();
+            list[i] = new LinkedList<DictionaryNode<K, V>>();
+
     }
 
-    @Override
+    // Returns an Iterator of the keys in the dictionary, in ascending
+    // sorted order. The iterator must be fail-fast.
     public Iterator<K> keys() {
+
         return new KeyIteratorHelper();
+
     }
 
-    @Override
+    // Returns an Iterator of the values in the dictionary. The
+    // order of the values must match the order of the keys.
+    // The iterator must be fail-fast.
     public Iterator<V> values() {
+
         return new ValueIteratorHelper();
+
     }
 
     // From the book.
     abstract class IteratorHelper<E> implements Iterator<E> {
-        protected HashElement<K, V>[] nodes;
+        protected DictionaryNode<K, V>[] nodes;
         protected int idx;
         protected long modCheck;
 
         public IteratorHelper() {
-            nodes = new HashElement[currentSize];
+            nodes = new DictionaryNode[currentSize];
             idx = 0;
             int j = 0;
             modCheck = modCounter;
 
             for (int i = 0; i < tableSize; i++)
-                for (HashElement<K, V> n : h_array[i])
+                for (DictionaryNode<K, V> n : list[i])
                     nodes[j++] = n;
             sort();
         }
@@ -230,13 +221,13 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
             if (right - left <= 0)
                 return;
 
-            HashElement pivot = nodes[right];
+            DictionaryNode pivot = nodes[right];
             int partition = getPartition(left, right, pivot);
             quickSortArray(left, partition - 1);
             quickSortArray(partition + 1, right);
         }
 
-        private int getPartition(int left, int right, HashElement pivot) {
+        private int getPartition(int left, int right, DictionaryNode pivot) {
             int lPtr = left - 1;
             int rPtr = right;
 
@@ -256,7 +247,7 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
         }
 
         private void swap(int one, int two) {
-            HashElement temp = nodes[one];
+            DictionaryNode temp = nodes[one];
             nodes[one] = nodes[two];
             nodes[two] = temp;
         }
@@ -281,281 +272,160 @@ public class Hashtable<K extends Comparable<K>,V> implements DictionaryADT<K,V> 
             return (V) nodes[idx++].value;
         }
 
-        public HashElement<K, V> iterNode() {
-            return (HashElement<K, V>) nodes[idx];
+        public DictionaryNode<K, V> iterNode() {
+            return (DictionaryNode<K, V>) nodes[idx];
         }
     }
 
 }
 
+class LinkedList<E extends Comparable<E>> implements Iterable<E> {
+    private class Node<T> {
+        T data;
+        Node<T> next;
+        Node<T> prev;
 
-    //---------------------------------------------------------------------------------------
-    //----------LINKED_LIST------------------------------------------------------------------
-    /*  LinkedList
-     *  Singly linked list
-     *  PKraft Spring 2019
-     */
-
-    class LinkedListDS<E> implements ListADT<E> {
-        /////////////////////////////////////////////////////////////////
-        class Node<T> {
-            T data;
-            Node<T> next;
-
-            public Node(T obj) {
-                data = obj;
-                next = null;
-            }
+        public Node(T d) {
+            data = d;
+            next = null;
+            prev = null;
         }
-        // END CLASS NODE ///////////////////////////////////////////////
+    }
 
-        /////////////////////////////////////////////////////////////////
-        class ListIteratorHelper implements Iterator<E> {
-            Node<E> index;
+    private Node<E> head;
+    private int modCounter, currentSize;
 
-            public ListIteratorHelper() {
-                index = head;
-            }
+    public LinkedList() {
+        currentSize = 0;
+        head = null;
+    }
 
-            public boolean hasNext() {
-                return index != null;
-            }
+    // Inserts a new object into the priority queue. Returns true if
+    // the insertion is successful. If the PQ is full, the insertion
+    // is aborted, and the method returns false.
+    public boolean insert(E object) {
+        Node<E> newNode = new Node<E>(object);
+        newNode.next = head;
+        head = newNode;
+        currentSize++;
+        modCounter++;
+        return true;
+    }
 
-            public E next() {
-                if(!hasNext())
-                    throw new NoSuchElementException();
-                E tmp = index.data;
-                index = index.next;
-                return tmp;
-            }
-
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-
+    // Deletes all instances of the parameter obj from the PQ if found, and
+    // returns true. Returns false if no match to the parameter obj is found.
+    public boolean delete(E obj) {
+        Node<E> current = head;
+        Node<E> previous = null;
+        while (current != null &&current.data.compareTo(obj) == 0 ) {
+            previous = current;
+            current = current.next;
         }
-        // END CLASS LIST_ITERATOR_HELPER //////////////////////////////
-
-
-        private Node<E> head, tail;
-        private int currentSize;
-
-        public LinkedListDS() {
-            head = tail = null;
-            currentSize = 0;
+        if (current == null) {
+            return false;
         }
-
-        public void addFirst(E obj) {
-            Node<E> newNode = new Node<E>(obj);
-            if(isEmpty())
-                head = tail = newNode;
-            else {
-                newNode.next = head;
-                head = newNode;
-            }
-            currentSize++;
-        }
-
-        public void addLast(E obj) {
-            Node<E> newNode = new Node<E>(obj);
-            if(isEmpty())
-                head = tail = newNode;
-            else {
-                tail.next = newNode;
-                tail = newNode;
-            }
-            currentSize++;
-        }
-
-        public E removeFirst() {
-            if(isEmpty())
-                return null;
-            E tmp = head.data;
+        if(current == head) {
             head = head.next;
-            if(head == null)
-                head = tail = null;
-            currentSize--;
-            return tmp;
         }
-
-        public E removeLast() {
-            if(isEmpty())
-                return null;
-            E tmp = tail.data;
-            if(head == tail) // only one element in the list
-                head = tail = null;
-            else {
-                Node<E> previous = null, current = head;
-                while(current != tail) {
-                    previous = current;
-                    current = current.next;
-                }
-                previous.next = null;
-                tail = previous;
-            }
-
-            currentSize--;
-            return tmp;
+        else {
+            previous.next = current.next;
         }
+        currentSize--;
+        modCounter++;
+        return true;
+    }
 
-        public E peekFirst() {
-            if(head == null)
-                return null;
-            return head.data;
-        }
-
-        public E peekLast() {
-            if(tail == null)
-                return null;
-            return tail.data;
-        }
-
-        public E find(E obj) {
-            if(head == null) return null;
-            Node<E> tmp = head;
-            while(tmp != null) {
-                if(((Comparable<E>)obj).compareTo(tmp.data) == 0)
-                    return tmp.data;
-                tmp = tmp.next;
-            }
+    // Returns the object of highest priority that has been in the
+    // PQ the longest, but does NOT remove it.
+    // Returns null if the PQ is empty.
+    public E peek() {
+        Node<E> current = head;
+        E minVal = head.data;
+        if (isEmpty()) {
             return null;
         }
 
-        public boolean remove(E obj) {
-            if(isEmpty())
-                return false;
-            Node<E> previous = null, current = head;
-            while(current != null) {
-                if( ((Comparable<E>)current.data).compareTo(obj) == 0) {
-                    if(current == head)
-                        removeFirst();
-                    else if(current == tail)
-                        removeLast();
-                    else {
-                        previous.next = current.next;
-                        currentSize--;
-                    }
-                    return true;
-                }
-                previous = current;
-                current = current.next;
-            }
-            return false;
+        while (current != null) {
+            if (current.data.compareTo(minVal) <= 0)
+                minVal = current.data;
+            current = current.next;
         }
-
-        // not in the interface.  Removes all instances of the key obj
-        public boolean removeAllInstances(E obj) {
-            Node<E> previous = null, current = head;
-            boolean found = false;
-            while(current != null) {
-                if(((Comparable<E>)obj).compareTo(current.data) == 0) {
-                    if(previous == null) { // node to remove is head
-                        head = head.next;
-                        if(head == null) tail = null;
-                    }
-                    else if(current == tail) {
-                        previous.next = null;
-                        tail = previous;
-                    }
-                    else
-                        previous.next = current.next;
-                    found = true;
-                    currentSize--;
-                    current = current.next;
-                }
-                else {
-                    previous = current;
-                    current = current.next;
-                }
-            } // end while
-            return found;
-        }
-
-        public void makeEmpty() {
-            head = tail = null;
-            currentSize = 0;
-        }
-
-        public boolean contains(E obj) {
-            Node current = head;
-            while(current != null) {
-                if( ((Comparable<E>)current.data).compareTo(obj) == 0)
-                    return true;
-                current = current.next;
-            }
-            return false;
-        }
-
-        public boolean isEmpty() {
-            return head == null;
-        }
-
-        public boolean isFull() {
-            return false;
-        }
-
-        public int size() {
-            return currentSize;
-        }
-
-        public Iterator<E> iterator() {
-            return new ListIteratorHelper();
-        }
+        return minVal;
     }
 
-     interface ListADT<E> extends Iterable<E> {
-
-
-        //  Adds the Object obj to the beginning of the list
-        public void addFirst(E obj);
-
-        //  Adds the Object obj to the end of the list
-        public void addLast(E o);
-
-        //  Removes the first Object in the list and returns it.
-        //  Returns null if the list is empty.
-        public E removeFirst();
-
-        //  Removes the last Object in the list and returns it.
-        //  Returns null if the list is empty.
-        public E removeLast();
-
-        //  Returns the first Object in the list, but does not remove it.
-        //  Returns null if the list is empty.
-        public E peekFirst();
-
-        //  Returns the last Object in the list, but does not remove it.
-        //  Returns null if the list is empty.
-        public E peekLast();
-
-        //  Finds and returns the Object obj if it is in the list, otherwise
-        //  returns null.  Does not modify the list in any way
-        public E find(E obj);
-
-        //  Removes the first instance of thespecific Object obj from the list, if it exists.
-        //  Returns true if the Object obj was found and removed, otherwise false
-        public boolean remove(E obj);
-
-        //  The list is returned to an empty state.
-        public void makeEmpty();
-
-        //  Returns true if the list contains the Object obj, otherwise false
-        public boolean contains(E obj);
-
-        //  Returns true if the list is empty, otherwise false
-        public boolean isEmpty();
-
-        //  Returns true if the list is full, otherwise false
-        public boolean isFull();
-
-        //  Returns the number of Objects currently in the list.
-        public int size();
-
-        //  Returns an Iterator of the values in the list, presented in
-        //  the same order as the list.
-        public Iterator<E> iterator();
+    // Returns true if the priority queue contains the specified element
+    // false otherwise.
+    public boolean contains(E obj) {
+        return find(obj) != null;
 
     }
 
+    public E find(E obj) {
+        for (E element : this)
+            if (obj.compareTo(element) == 0)
+                return element;
+        return null;
+    }
 
+    // Returns the number of objects currently in the PQ.
+    public int size() {
+        return currentSize;
 
+    }
+
+    // Returns the PQ to an empty state.
+    public void clear() {
+        head = null;
+        currentSize = 0;
+
+    }
+
+    // Returns true if the PQ is empty, otherwise false
+    public boolean isEmpty() {
+        if (head == null)
+            return true;
+        return false;
+
+    }
+
+    // Returns true if the PQ is full, otherwise false. List based
+    // implementations should always return false.
+    public boolean isFull() {
+        return false;
+
+    }
+
+    // Returns an iterator of the objects in the PQ, in no particular
+    // order.
+    public Iterator<E> iterator() {
+        return new IteratorHelper();
+    }
+
+    class IteratorHelper implements Iterator<E> {
+        private Node<E> iterPtr;
+        private long modCheck;
+
+        public IteratorHelper() {
+            modCheck = modCounter;
+            iterPtr = head;
+        }
+
+        public boolean hasNext() {
+            if (modCheck != modCounter)
+                throw new ConcurrentModificationException();
+            return iterPtr != null;
+        }
+
+        public E next() {
+            if (!hasNext())
+                throw new NoSuchElementException();
+            E temp = iterPtr.data;
+            iterPtr = iterPtr.next;
+            return temp;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+}
