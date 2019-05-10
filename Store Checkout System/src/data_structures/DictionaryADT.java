@@ -1,3 +1,12 @@
+/**
+ *  Program #4
+ *  1-2 Line Description of class/program
+ *  CS310-1
+ *  May 9, 2019
+ *  @author  Pranav Kalra cssc1483
+ */
+
+
 /*
     DictionaryADT.java
     Dictionary interface.

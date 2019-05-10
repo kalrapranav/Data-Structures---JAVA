@@ -1,106 +1,114 @@
+/**
+ *  Program #4
+ *  1-2 Line Description of class/program
+ *  CS310-1
+ *  May 9, 2019
+ *  @author  Pranav Kalra cssc1483
+ */
+
+
+
+//header files
 import data_structures.*;
 import java.util.Iterator;
 
+
+/*=============================================================================
+  |----------------------------------------------------------------------------
+  |  Citations:
+  |  - Prof. Kraft Lecture Notes
+  |  - Introduction to Algorithms by Thomas H. Cormen
+  | >> The following clas was written by teh help of Prof. Kraft';s lecture notes and
+  | >> and from the help of awesome TA's of CS 310 ~ Will and Nhan
+  |--------------------------------------------------------------------------*/
+
 public class ProductLookup {
+
+    /*===================Class=Variables=======================================================*/
+
     private DictionaryADT<String, StockItem> book;
 
 
-    // Constructor.  There is no argument-less constructor, or default size
+
+    /*===================Class=Methods=From=Dictionary=ADT===================================================*/
+
+    //Class Constructor.
     public ProductLookup(int maxSize) {
         book = new Hashtable<String, StockItem>(maxSize);
     }
 
-    // Adds a new StockItem to the dictionary
+    //The follwoing method adds an item with SKU and item
     public void addItem(String SKU, StockItem item) {
-
         book.add(SKU, item);
-
     }
 
-    // Returns the StockItem associated with the given SKU, if it is
-    // in the ProductLookup, null if it is not.
+    ///The following method gets the Item according to the SKU
     public StockItem getItem(String SKU) {
         if(!book.contains(SKU))
             return null;
-
-
         return book.getValue(SKU);
     }
 
-    // Returns the retail price associated with the given SKU value.
-    // -.01 if the item is not in the dictionary
+    ///The following method gets the Retail according to the SKU
     public float getRetail(String SKU) {
         if(!book.contains(SKU))
             return (float) -.01;
-
         return book.getValue(SKU).retail;
     }
 
-    // Returns the cost price associated with the given SKU value.
-    // -.01 if the item is not in the dictionary
+    //The following method gets the Cost according to the SKU
     public float getCost(String SKU) {
         if(!book.contains(SKU))
             return (float) -.01;
-
         return book.getValue(SKU).cost;
-
     }
 
-    // Returns the description of the item, null if not in the dictionary.
+    ///The following method gets the Description according to the SKU
     public String getDescription(String SKU) {
-
         if(!book.contains(SKU))
             return null;
         return book.getValue(SKU).getDescription();
     }
 
-    // Deletes the StockItem associated with the SKU if it is
-    // in the ProductLookup.  Returns true if it was found and
-    // deleted, otherwise false.
+    ///The following method deletes the Item according to the SKU.
     public boolean deleteItem(String SKU) {
-
         if(!book.contains(SKU))
             return false;
         book.delete(SKU);
         return true;
     }
 
-    // Prints a directory of all StockItems with their associated
-    // price, in sorted order (ordered by SKU).
+    ///The following method prints all the values
     public void printAll() {
         Iterator<StockItem> iter = book.values();
-
-        while(iter.hasNext()) {
-
+        while(iter.hasNext())
             System.out.println(iter.next());
-        }
     }
 
-    // Prints a directory of all StockItems from the given vendor,
-    // in sorted order (ordered by SKU).
+    //The following method prints all the values according to teh value
+    // of the vendor
     public void print(String vendor) {
         Iterator<StockItem> iter = book.values();
-
         while(iter.hasNext()) {
             StockItem tmpVal = iter.next();
-
-            if(tmpVal.vendor.compareTo(vendor) == 0) {
+            if(tmpVal.vendor.compareTo(vendor) == 0)
                 System.out.println(iter.next());
-            }
-
         }
-
     }
 
+    /*===================Class=Methods=From=Dictionary=ADT====END===============================================*/
 
-    // An iterator of the SKU keys.
+
+    /*===================Iterators====END===================================================*/
+
+
     public Iterator<String> keys(){
         return book.keys();
-
     }
 
-    // An iterator of the StockItem values.
     public Iterator<StockItem> values(){
         return book.values();
     }
+
+    /*===================Iterators====END===================================================*/
 }

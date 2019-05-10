@@ -1,122 +1,158 @@
+/**
+ *  Program #4
+ *  1-2 Line Description of class/program
+ *  CS310-1
+ *  May 9, 2019
+ *  @author  Pranav Kalra cssc1483
+ */
+
+
 
 package data_structures;
 
+
+//header files
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.ConcurrentModificationException;
 
+/*=============================================================================
+  |----------------------------------------------------------------------------
+  |  Citations:
+  |  - Supplementary Reader by Prof. Alan Riggins
+  |  - Data Structures and Algorithms in Java by Roberto Tamassia
+  |  - Prof. Kraft Lecture Notes
+  |  - Prof. Rob Edwards Videos
+  |  - Introduction to Algorithms by Thomas H. Cormen
+  | >> These books and resources were refered to write the HashElement inner class, add(K key),
+  |    delete(K key), getValue(K key), getKey(V value), contains Iterator Class both Value and Key
+  |--------------------------------------------------------------------------*/
+
 public class Hashtable<K extends Comparable<K>, V> implements DictionaryADT<K, V> {
 
-    private LinkedList<DictionaryNode<K, V>>[] list;
+    /*===================Class=Variables=======================================================*/
+    //Class Variables
+    private LinkedList<HashElement<K, V>>[] list;
     int maxSize;
     int tableSize;
     int currentSize;
     int modCounter;
 
-    // Given from the book
-    private class DictionaryNode<K, V> implements Comparable<DictionaryNode<K, V>> {
+    // Hash Element is the inner class that is a bucket to store Key-Value pair
+    private class HashElement<K, V> implements Comparable<HashElement<K, V>> {
         K key;
         V value;
 
-        public DictionaryNode(K key, V value) {
+        //Inner Class Constructor
+        //To initialize the Key adn Value
+        public HashElement(K key, V value) {
 
             this.key = key;
             this.value = value;
         }
 
-        public int compareTo(DictionaryNode<K, V> node) {
+        //To Compare key of two hashElements as they are distinct or not
+        public int compareTo(HashElement<K, V> node) {
 
             return ((Comparable<K>) key).compareTo((K) node.key);
         }
     }
 
+    //Class Constructor
+    // To initialize the currentSize, ,modCounter, maxSize and tableSize
     public Hashtable(int max) {
         currentSize = 0;
         modCounter = 0;
         maxSize = max;
         tableSize = (int) (max * 1.5f);
 
-        // Given from the book.
         list = new LinkedList[tableSize];
         for (int i = 0; i < tableSize; i++)
-            list[i] = new LinkedList<DictionaryNode<K, V>>();
+            list[i] = new LinkedList<HashElement<K, V>>();
     }
 
+
+    //To get HashCode
+    // The following method takes the, gets its hashcode
+    //then, get the absolute value of the hashcode and mod
+    //it to the table size
     private int getHashCode(K key) {
-
-        return (key.hashCode() & 0x7FFFFFFF) % tableSize;// provided in the book
+        return (key.hashCode() & 0x7FFFFFFF) % tableSize;
     }
 
-    // Returns true if the dictionary has an object identified by
-    // key in it, otherwise false.
+
+    /*===================Class=Methods=From=Dictionary=ADT===================================================*/
+
+    //To check if the data structure as a HashElement with the
+    //provided key
     public boolean contains(K key) {
         int temp = getHashCode(key);
 
-        for (DictionaryNode<K, V> node : list[temp]) {
+        for (HashElement<K, V> node : list[temp]) {
             if (key.compareTo(node.key) == 0)
                 return true;
         }
-
         return false;
     }
 
-    // Adds the given key/value pair to the dictionary. Returns
-    // false if the dictionary is full, or if the key is a duplicate.
-    // Returns true if addition succeeded.
+    //The following method adds a key-value pair to the chain hash
     public boolean add(K key, V value) {
-
+        //If the array is Full
+        //Currently the data structure is returning False but we can resize the array of the
+        //data structure is full
+        //So, if loadFactor > maxLoadFactor
+        //(where maxLoadFactor =  0.75 and loadFactor = size of the array/number of elements)
         if (isFull())
             return false;
-        if (contains(key) == true)
+        //If the key is already there we cant add as keys should be distinct
+        if (contains(key))
             return false;
 
-        list[getHashCode(key)].insert(new DictionaryNode<K, V>(key, value));// insert the given element.
+        //gets an element's hashcode and and creates and add  a new with that K-V pair
+        list[getHashCode(key)].insert(new HashElement<K, V>(key, value));
 
         currentSize++;
         modCounter++;
         return true;
     }
 
-    // Deletes the key/value pair identified by the key parameter.
-    // Returns true if the key/value pair was found and removed,
-    // otherwise false.
+    //Deletes a hashElement with the corresponding key
     public boolean delete(K key) {
+        //If the data structure is empty
         if (isEmpty())
             return false;
+        //If the follwing key is not present
         if (contains(key) == false)
             return false;
 
-        list[getHashCode(key)].delete(new DictionaryNode<K, V>(key, null));
+        //gets the hashcode fo the key and deletes
+        list[getHashCode(key)].delete(new HashElement<>(key, null));
 
         currentSize--;
         modCounter++;
         return true;
     }
 
-    // Returns the value associated with the parameter key. Returns
-    // null if the key is not found or the dictionary is empty.
+    //To get the value of a HashElement according to its key
     public V getValue(K key) {
+        //If the data structure is empty
         if(!contains(key))
             return null;
         int temp = getHashCode(key);
 
-        for (DictionaryNode<K, V> node : list[temp]) {
+        for (HashElement<K, V> node : list[temp]) {
             if (key.compareTo(node.key) == 0)
                 return node.value;
         }
-
         return null;
     }
 
-    // Returns the key associated with the parameter value. Returns
-    // null if the value is not found in the dictionary. If more
-    // than one key exists that matches the given value, returns the
-    // first one found.
+    //TO get the key of the hashElement according to the value
+    //For teh following method the complexity will be big-omega(n) as
+    //we would have to traverse through the array adn then multiple nodes of a linkedList too
     public K getKey(V value) {
-
         for (int i = 0; i < tableSize; i++) {
-
-            for (DictionaryNode<K, V> node : list[i]) {
+            for (HashElement<K, V> node : list[i]) {
                 if (value.toString().compareTo(node.value.toString()) == 0) {
                     return node.key;
                 }
@@ -125,77 +161,60 @@ public class Hashtable<K extends Comparable<K>, V> implements DictionaryADT<K, V
         return null;
     }
 
-    // Returns the number of key/value pairs currently stored
-    // in the dictionary
+    //To get the total number of hashElements in the data structure
     public int size() {
-
         return currentSize;
     }
 
-    // Returns true if the dictionary is at max capacity
+    //To see if the data structure is full or not
     public boolean isFull() {
         return currentSize == maxSize;
-		/*
-		if (0.75 <= ((double) currentSize / tableSize)) //use load factor
-			return true;
-
-		return false;
-		*/
     }
 
-    // Returns true if the dictionary is empty
+    //To see if the data structure is empty
     public boolean isEmpty() {
-
         if (currentSize == 0)
             return true;
-
         return false;
-
     }
 
-    // Returns the Dictionary object to an empty state.
+    //To set the data structurek to empty state
     public void clear() {
         currentSize = 0;
         modCounter++;
 
-        // Given from the book.
         list = new LinkedList[tableSize];
         for (int i = 0; i < tableSize; i++)
-            list[i] = new LinkedList<DictionaryNode<K, V>>();
+            list[i] = new LinkedList<HashElement<K, V>>();
 
     }
 
-    // Returns an Iterator of the keys in the dictionary, in ascending
-    // sorted order. The iterator must be fail-fast.
+    /*===================Class=Methods=From=Dictionary=ADT==END================================================*/
+
+
+    /*===================Iterators=======================================================*/
+
     public Iterator<K> keys() {
-
         return new KeyIteratorHelper();
-
     }
 
-    // Returns an Iterator of the values in the dictionary. The
-    // order of the values must match the order of the keys.
-    // The iterator must be fail-fast.
     public Iterator<V> values() {
-
         return new ValueIteratorHelper();
-
     }
 
-    // From the book.
     abstract class IteratorHelper<E> implements Iterator<E> {
-        protected DictionaryNode<K, V>[] nodes;
+        protected HashElement<K, V>[] nodes;
         protected int idx;
         protected long modCheck;
 
         public IteratorHelper() {
-            nodes = new DictionaryNode[currentSize];
+            nodes = new HashElement[currentSize];
             idx = 0;
             int j = 0;
             modCheck = modCounter;
 
             for (int i = 0; i < tableSize; i++)
-                for (DictionaryNode<K, V> n : list[i])
+                for (HashElement<K, V> n : list[i])
                     nodes[j++] = n;
             sort();
         }
@@ -221,13 +240,13 @@ public class Hashtable<K extends Comparable<K>, V> implements DictionaryADT<K, V
             if (right - left <= 0)
                 return;
 
-            DictionaryNode pivot = nodes[right];
+            HashElement pivot = nodes[right];
             int partition = getPartition(left, right, pivot);
             quickSortArray(left, partition - 1);
             quickSortArray(partition + 1, right);
         }
 
-        private int getPartition(int left, int right, DictionaryNode pivot) {
+        private int getPartition(int left, int right, HashElement pivot) {
             int lPtr = left - 1;
             int rPtr = right;
 
@@ -247,7 +266,7 @@ public class Hashtable<K extends Comparable<K>, V> implements DictionaryADT<K, V
         }
 
         private void swap(int one, int two) {
-            DictionaryNode temp = nodes[one];
+            HashElement temp = nodes[one];
             nodes[one] = nodes[two];
             nodes[two] = temp;
         }
@@ -272,13 +291,17 @@ public class Hashtable<K extends Comparable<K>, V> implements DictionaryADT<K, V
             return (V) nodes[idx++].value;
         }
 
-        public DictionaryNode<K, V> iterNode() {
-            return (DictionaryNode<K, V>) nodes[idx];
-        }
+        /* DONT USE VERY BAD
+        public HashElement<K, V> iterNode() {
+            return (HashElement<K, V>) nodes[idx];
+        } */
     }
 
-}
 
+    /*===================Iterators====END===================================================*/
+
+}
+//--------------------------------------------------------------------------------------
 class LinkedList<E extends Comparable<E>> implements Iterable<E> {
     private class Node<T> {
         T data;
@@ -300,9 +323,6 @@ class LinkedList<E extends Comparable<E>> implements Iterable<E> {
         head = null;
     }
 
-    // Inserts a new object into the priority queue. Returns true if
-    // the insertion is successful. If the PQ is full, the insertion
-    // is aborted, and the method returns false.
     public boolean insert(E object) {
         Node<E> newNode = new Node<E>(object);
         newNode.next = head;
@@ -312,8 +332,7 @@ class LinkedList<E extends Comparable<E>> implements Iterable<E> {
         return true;
     }
 
-    // Deletes all instances of the parameter obj from the PQ if found, and
-    // returns true. Returns false if no match to the parameter obj is found.
+
     public boolean delete(E obj) {
         Node<E> current = head;
         Node<E> previous = null;
@@ -335,9 +354,7 @@ class LinkedList<E extends Comparable<E>> implements Iterable<E> {
         return true;
     }
 
-    // Returns the object of highest priority that has been in the
-    // PQ the longest, but does NOT remove it.
-    // Returns null if the PQ is empty.
+
     public E peek() {
         Node<E> current = head;
         E minVal = head.data;
@@ -353,8 +370,7 @@ class LinkedList<E extends Comparable<E>> implements Iterable<E> {
         return minVal;
     }
 
-    // Returns true if the priority queue contains the specified element
-    // false otherwise.
+
     public boolean contains(E obj) {
         return find(obj) != null;
 
@@ -367,36 +383,28 @@ class LinkedList<E extends Comparable<E>> implements Iterable<E> {
         return null;
     }
 
-    // Returns the number of objects currently in the PQ.
     public int size() {
         return currentSize;
 
     }
 
-    // Returns the PQ to an empty state.
     public void clear() {
         head = null;
         currentSize = 0;
-
     }
 
-    // Returns true if the PQ is empty, otherwise false
     public boolean isEmpty() {
         if (head == null)
             return true;
         return false;
-
     }
 
-    // Returns true if the PQ is full, otherwise false. List based
-    // implementations should always return false.
+
     public boolean isFull() {
         return false;
-
     }
 
-    // Returns an iterator of the objects in the PQ, in no particular
-    // order.
+
     public Iterator<E> iterator() {
         return new IteratorHelper();
     }
@@ -429,3 +437,5 @@ class LinkedList<E extends Comparable<E>> implements Iterable<E> {
         }
     }
 }
+
+/*===================End=of=HashTable=Class=====================================================*/
