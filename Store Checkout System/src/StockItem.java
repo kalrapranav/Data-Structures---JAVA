@@ -85,3 +85,5 @@ public class StockItem implements Comparable<StockItem> {
                 + ", retail=" + retail + "]";
     }
 }
+
+/*===================End=of=StockItem=Class=====================================================*/
