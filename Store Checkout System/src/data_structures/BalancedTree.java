@@ -1,7 +1,8 @@
 
 /**
  *  Program #4
- *  1-2 Line Description of class/program
+ *  The following program is the implementation of DictionaryADT
+ *  by using Balanced Tree
  *  CS310-1
  *  May 9, 2019
  *  @author  Pranav Kalra cssc1483
@@ -41,13 +42,13 @@ public class BalancedTree<K extends Comparable<K>, V> implements DictionaryADT<K
         tree = new TreeMap<K, V>();
     }
 
-    //The following method checks that the red-black tree contains
+    //The following method checks that the Balanced tree contains
     // the following Node according to its key
     public boolean contains(K key) {
         return tree.containsKey(key);
     }
 
-    //The following method adds a node to the red-black tree
+    //The following method adds a node to the Balanced tree
     public boolean add(K key, V value) {
         if (isFull() || tree.containsKey(key))
             return false;
@@ -56,12 +57,12 @@ public class BalancedTree<K extends Comparable<K>, V> implements DictionaryADT<K
         return true;
     }
 
-    //The following method deletes a node to the red-black tree
+    //The following method deletes a node to the Balanced tree
     public boolean delete(K key) {
         return tree.remove(key) != null;
     }
 
-    //The following method gets the value of node from the red-black
+    //The following method gets the value of node from the Balanced
     // tree according to the Key provided
     public V getValue(K key) {
         if(isEmpty())
@@ -70,7 +71,7 @@ public class BalancedTree<K extends Comparable<K>, V> implements DictionaryADT<K
 
     }
 
-    //The following method gets the key of node from the red-black
+    //The following method gets the key of node from the Balanced
     // tree according to the value provided
     public K getKey(V value) {
         for (K key: tree.navigableKeySet()) {
@@ -81,24 +82,24 @@ public class BalancedTree<K extends Comparable<K>, V> implements DictionaryADT<K
     }
 
     //The following method gets the size(number of key-value pairs)
-    // of the red-black tree
+    // of the Balanced tree
     public int size() {
         return tree.size();
     }
 
-    //The following method checks the red-black tree is full or not
+    //The following method checks the Balanced tree is full or not
     public boolean isFull() {
         return false;
     }
 
-    ///The following method checks the red-black tree is empty or not
+    ///The following method checks the Balanced tree is empty or not
     public boolean isEmpty() {
         if (tree.size() != 0)
             return false;
         return true;
     }
 
-    ///The following method sets the red-black tree to empty state
+    ///The following method sets the Balanced tree to empty state
     public void clear() {
         tree.clear();
     }

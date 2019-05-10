@@ -1,6 +1,7 @@
 /**
  *  Program #4
- *  1-2 Line Description of class/program
+ *  The following program is the implementation of DictionaryADT
+ *  by using chain hashes
  *  CS310-1
  *  May 9, 2019
  *  @author  Pranav Kalra cssc1483
@@ -226,8 +227,6 @@ public class Hashtable<K extends Comparable<K>, V> implements DictionaryADT<K, V
             return (idx < currentSize);
         }
 
-        public abstract E next();
-
         public void remove() {
             throw new UnsupportedOperationException();
         }
@@ -291,151 +290,169 @@ public class Hashtable<K extends Comparable<K>, V> implements DictionaryADT<K, V
             return (V) nodes[idx++].value;
         }
 
-        /* DONT USE VERY BAD
-        public HashElement<K, V> iterNode() {
-            return (HashElement<K, V>) nodes[idx];
-        } */
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+
     }
 
 
     /*===================Iterators====END===================================================*/
 
 }
-//--------------------------------------------------------------------------------------
-class LinkedList<E extends Comparable<E>> implements Iterable<E> {
-    private class Node<T> {
-        T data;
-        Node<T> next;
-        Node<T> prev;
 
-        public Node(T d) {
-            data = d;
-            next = null;
-            prev = null;
+    /*===================Linked=List=======================================================*/
+
+    /*=============================================================================
+    |----------------------------------------------------------------------------
+    |  Citations:
+    |  - Prof. Kraft Lecture Notes
+    |  - Prof. Rob Edwards Videos
+    |  - Introduction to Algorithms by Thomas H. Cormen
+    |  - www.hakerrank.com
+    | >> The following Linked List class was taken from Introduction to Algorithms by Thomas H Cormen
+    | >> Some from excerpts from www.hakerrank.com and notes from Prof. Rob Edwards video and Prof. Kraft's
+    | lectures
+    |--------------------------------------------------------------------------*/
+
+
+    class LinkedList<E extends Comparable<E>> implements Iterable<E> {
+        private class Node<T> {
+            T data;
+            Node<T> next;
+            Node<T> prev;
+
+            public Node(T d) {
+                data = d;
+                next = null;
+                prev = null;
+            }
         }
-    }
 
-    private Node<E> head;
-    private int modCounter, currentSize;
+        private Node<E> head;
+        private int modificationCounter, currentSize;
 
-    public LinkedList() {
-        currentSize = 0;
-        head = null;
-    }
-
-    public boolean insert(E object) {
-        Node<E> newNode = new Node<E>(object);
-        newNode.next = head;
-        head = newNode;
-        currentSize++;
-        modCounter++;
-        return true;
-    }
-
-
-    public boolean delete(E obj) {
-        Node<E> current = head;
-        Node<E> previous = null;
-        while (current != null &&current.data.compareTo(obj) == 0 ) {
-            previous = current;
-            current = current.next;
+        public LinkedList() {
+            currentSize = 0;
+            head = null;
         }
-        if (current == null) {
-            return false;
+
+        public boolean insert(E object) {
+            Node<E> newNode = new Node<E>(object);
+            newNode.next = head;
+            head = newNode;
+            currentSize++;
+            modificationCounter++;
+            return true;
         }
-        if(current == head) {
-            head = head.next;
-        }
-        else {
-            previous.next = current.next;
-        }
-        currentSize--;
-        modCounter++;
-        return true;
-    }
 
 
-    public E peek() {
-        Node<E> current = head;
-        E minVal = head.data;
-        if (isEmpty()) {
+        public boolean delete(E obj) {
+            Node<E> current = head;
+            Node<E> previous = null;
+            while (current != null &&current.data.compareTo(obj) == 0 ) {
+                previous = current;
+                current = current.next;
+            }
+            if (current == null) {
+                return false;
+            }
+            if(current == head) {
+                head = head.next;
+            }
+            else {
+                previous.next = current.next;
+            }
+            currentSize--;
+            modificationCounter++;
+            return true;
+        }
+
+
+        public E peek() {
+            Node<E> current = head;
+            E minVal = head.data;
+            if (isEmpty()) {
+                return null;
+            }
+            while (current != null) {
+                if (current.data.compareTo(minVal) <= 0)
+                    minVal = current.data;
+                current = current.next;
+            }
+            return minVal;
+        }
+
+
+        public boolean contains(E obj) {
+            return find(obj) != null;
+        }
+
+        public E find(E obj) {
+            for (E element : this)
+                if (obj.compareTo(element) == 0)
+                    return element;
             return null;
         }
 
-        while (current != null) {
-            if (current.data.compareTo(minVal) <= 0)
-                minVal = current.data;
-            current = current.next;
-        }
-        return minVal;
-    }
+        public int size() {
+            return currentSize;
 
-
-    public boolean contains(E obj) {
-        return find(obj) != null;
-
-    }
-
-    public E find(E obj) {
-        for (E element : this)
-            if (obj.compareTo(element) == 0)
-                return element;
-        return null;
-    }
-
-    public int size() {
-        return currentSize;
-
-    }
-
-    public void clear() {
-        head = null;
-        currentSize = 0;
-    }
-
-    public boolean isEmpty() {
-        if (head == null)
-            return true;
-        return false;
-    }
-
-
-    public boolean isFull() {
-        return false;
-    }
-
-
-    public Iterator<E> iterator() {
-        return new IteratorHelper();
-    }
-
-    class IteratorHelper implements Iterator<E> {
-        private Node<E> iterPtr;
-        private long modCheck;
-
-        public IteratorHelper() {
-            modCheck = modCounter;
-            iterPtr = head;
         }
 
-        public boolean hasNext() {
-            if (modCheck != modCounter)
-                throw new ConcurrentModificationException();
-            return iterPtr != null;
+        public void clear() {
+            head = null;
+            currentSize = 0;
         }
 
-        public E next() {
-            if (!hasNext())
-                throw new NoSuchElementException();
-            E temp = iterPtr.data;
-            iterPtr = iterPtr.next;
-            return temp;
+        public boolean isEmpty() {
+            if (head == null)
+                return true;
+            return false;
         }
 
-        public void remove() {
-            throw new UnsupportedOperationException();
+
+        public boolean isFull() {
+            return false;
         }
+
+
+        public Iterator<E> iterator() {
+            return new IteratorHelper();
+        }
+
+        class IteratorHelper implements Iterator<E> {
+            private Node<E> iterPtr;
+            private long modificationCheck;
+
+            public IteratorHelper() {
+                modificationCheck = modificationCounter;
+                iterPtr = head;
+            }
+
+            public boolean hasNext() {
+                if (modificationCheck != modificationCounter)
+                    throw new ConcurrentModificationException();
+                return iterPtr != null;
+            }
+
+            public E next() {
+                if (!hasNext())
+                    throw new NoSuchElementException();
+                E temp = iterPtr.data;
+                iterPtr = iterPtr.next;
+                return temp;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        }
+            /*===================Linked=List====END===================================================*/
+
+      
+
     }
-}
 
 /*===================End=of=HashTable=Class=====================================================*/

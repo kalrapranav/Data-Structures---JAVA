@@ -1,6 +1,7 @@
 /**
  *  Program #4
- *  1-2 Line Description of class/program
+ *  The folloeing program gets different parameteres
+ *  about the stock items
  *  CS310-1
  *  May 9, 2019
  *  @author  Pranav Kalra cssc1483

@@ -1,6 +1,7 @@
 /**
  *  Program #4
- *  1-2 Line Description of class/program
+ *  The following program is the implementation of DictionaryADT
+ *  by using Binary Search Tree
  *  CS310-1
  *  May 9, 2019
  *  @author  Pranav Kalra cssc1483
