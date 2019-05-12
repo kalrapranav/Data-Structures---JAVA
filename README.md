@@ -14,3 +14,8 @@ hash tables, dynamic storage management; introduction to graphs using JAVA as th
 * [Binary Search Tree](https://github.com/kalrapranav/Data-Structures---JAVA/blob/master/Store%20Checkout%20System/src/data_structures/BinarySearchTree.java)
 * [Red-Black Tree](https://github.com/kalrapranav/Data-Structures---JAVA/blob/master/Store%20Checkout%20System/src/data_structures/BalancedTree.java)
 
+### [Store Checkout System](https://github.com/kalrapranav/Data-Structures---JAVA/tree/master/Store%20Checkout%20System)
+There is a portion of a retail store checkout system. 
+The application provides fast lookup for product information. A clerk (or customer) inputs a product stock number and the system returns the record for that item. The system is designed to provide facilities to add, remove and look up items, along with certain other utility functions. 
+
+
